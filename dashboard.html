@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title>InnoStart Dashboard - AI-Powered Startup Assistant</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="assets/css/dashboard.css?v=20241220" rel="stylesheet">
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h3><i class="fas fa-rocket me-2"></i>InnoStart</h3>
+        </div>
+        <nav class="sidebar-nav">
+            <div class="nav-item">
+                <a href="#" class="nav-link active" data-section="dashboard">
+                    <i class="fas fa-tachometer-alt"></i>
+                    Dashboard
+                </a>
+            </div>
+            <div class="nav-item">
+                <a href="#" class="nav-link" data-section="chat">
+                    <i class="fas fa-comments"></i>
+                    AI Chat
+                </a>
+            </div>
+            <div class="nav-item">
+                <a href="#" class="nav-link" data-section="search">
+                    <i class="fas fa-search"></i>
+                    Search
+                </a>
+            </div>
+            <div class="nav-item">
+                <a href="#" class="nav-link" data-section="business-plan">
+                    <i class="fas fa-file-alt"></i>
+                    Business Plan
+                </a>
+            </div>
+            <div class="nav-item">
+                <a href="#" class="nav-link" data-section="analytics">
+                    <i class="fas fa-chart-line"></i>
+                    Analytics
+                </a>
+            </div>
+            <div class="nav-item">
+                <a href="#" class="nav-link" data-section="settings">
+                    <i class="fas fa-cog"></i>
+                    Settings
+                </a>
+            </div>
+        </nav>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Header -->
+        <div class="header">
+            <div class="header-left">
+                <h1 id="page-title">Dashboard</h1>
+            </div>
+            <div class="header-right">
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" placeholder="Search anything..." id="global-search">
+                </div>
+                <div class="user-profile" id="userProfile">
+                    <div class="user-avatar" id="userAvatar">JD</div>
+                    <span id="userName">John Doe</span>
+                    <div class="dropdown">
+                        <button class="btn btn-link dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-chevron-down"></i>
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="#" onclick="showSection('settings')">
+                                <i class="fas fa-cog me-2"></i>Settings
+                            </a></li>
+                            <li><a class="dropdown-item" href="#" onclick="logout()">
+                                <i class="fas fa-sign-out-alt me-2"></i>Logout
+                            </a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Content Area -->
+        <div class="content-area">
+            <!-- Dashboard Section -->
+            <div id="dashboard" class="section active">
+                <!-- Stats Cards -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: var(--primary-color);">
+                            <i class="fas fa-rocket"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3>12</h3>
+                            <p>Active Projects</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: var(--success-color);">
+                            <i class="fas fa-dollar-sign"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3>$45K</h3>
+                            <p>Revenue Generated</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: var(--warning-color);">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3>1,234</h3>
+                            <p>Total Users</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: var(--info-color);">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3>89%</h3>
+                            <p>Success Rate</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="dashboard-card">
+                    <div class="card-header">
+                        <h5><i class="fas fa-bolt me-2"></i>Quick Actions</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="quick-actions">
+                            <a href="#" class="quick-action" onclick="showSection('business-plan')">
+                                <i class="fas fa-file-alt"></i>
+                                <div>Create Business Plan</div>
+                            </a>
+                            <a href="#" class="quick-action" onclick="showSection('chat')">
+                                <i class="fas fa-comments"></i>
+                                <div>Start AI Chat</div>
+                            </a>
+                            <a href="#" class="quick-action" onclick="showSection('search')">
+                                <i class="fas fa-search"></i>
+                                <div>Search Resources</div>
+                            </a>
+                            <a href="#" class="quick-action" onclick="showSection('analytics')">
+                                <i class="fas fa-chart-bar"></i>
+                                <div>View Analytics</div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Activity -->
+                <div class="dashboard-card">
+                    <div class="card-header">
+                        <h5><i class="fas fa-clock me-2"></i>Recent Activity</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="activity-item">
+                            <div class="d-flex align-items-center mb-3">
+                                <div class="activity-icon me-3">
+                                    <i class="fas fa-file-alt text-primary"></i>
+                                </div>
+                                <div>
+                                    <h6 class="mb-1">Business Plan Created</h6>
+                                    <small class="text-muted">2 hours ago</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="activity-item">
+                            <div class="d-flex align-items-center mb-3">
+                                <div class="activity-icon me-3">
+                                    <i class="fas fa-comments text-success"></i>
+                                </div>
+                                <div>
+                                    <h6 class="mb-1">AI Chat Session</h6>
+                                    <small class="text-muted">4 hours ago</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="activity-item">
+                            <div class="d-flex align-items-center mb-3">
+                                <div class="activity-icon me-3">
+                                    <i class="fas fa-search text-info"></i>
+                                </div>
+                                <div>
+                                    <h6 class="mb-1">Market Research</h6>
+                                    <small class="text-muted">1 day ago</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Chat Section -->
+            <div id="chat" class="section">
+                <div class="dashboard-card">
+                    <div class="card-header">
+                        <h5><i class="fas fa-comments me-2"></i>AI Assistant Chat</h5>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="chat-container">
+                            <div class="chat-messages" id="chat-messages">
+                                <div class="message assistant">
+                                    <div class="message-avatar">AI</div>
+                                    <div class="message-content">
+                                        Hello! I'm your AI startup assistant. How can I help you today? I can assist with business planning, market research, funding strategies, and much more!
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="chat-input">
+                                <div class="input-group">
+                                    <input type="text" id="chat-input" placeholder="Ask me anything about your startup..." onkeypress="handleChatKeyPress(event)">
+                                    <button class="send-btn" onclick="sendMessage()">
+                                        <i class="fas fa-paper-plane"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Search Section -->
+            <div id="search" class="section">
+                <div class="dashboard-card">
+                    <div class="card-header">
+                        <h5><i class="fas fa-search me-2"></i>Search Resources</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row mb-4">
+                            <div class="col-md-8">
+                                <input type="text" class="form-control" id="search-input" placeholder="Search for business resources, templates, guides...">
+                            </div>
+                            <div class="col-md-4">
+                                <select class="form-select" id="search-filter">
+                                    <option value="all">All Categories</option>
+                                    <option value="templates">Templates</option>
+                                    <option value="guides">Guides</option>
+                                    <option value="tools">Tools</option>
+                                    <option value="articles">Articles</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="search-results" id="search-results">
+                            <div class="search-result-item">
+                                <h6>Business Plan Template</h6>
+                                <p>Comprehensive template for creating professional business plans</p>
+                            </div>
+                            <div class="search-result-item">
+                                <h6>Market Research Guide</h6>
+                                <p>Step-by-step guide to conducting effective market research</p>
+                            </div>
+                            <div class="search-result-item">
+                                <h6>Funding Strategy Toolkit</h6>
+                                <p>Tools and resources for securing startup funding</p>
+                            </div>
+                            <div class="search-result-item">
+                                <h6>Legal Requirements Checklist</h6>
+                                <p>Complete checklist for business legal compliance</p>
+                            </div>
+                            <div class="search-result-item">
+                                <h6>Marketing Strategy Framework</h6>
+                                <p>Proven framework for developing marketing strategies</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Business Plan Section -->
+            <div id="business-plan" class="section">
+                <div class="dashboard-card">
+                    <div class="card-header">
+                        <h5><i class="fas fa-file-alt me-2"></i>Business Plan Generator</h5>
+                    </div>
+                    <div class="card-body">
+                        <form id="businessPlanForm">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="businessName" class="form-label">Business Name</label>
+                                        <input type="text" class="form-control" id="businessName" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="businessType" class="form-label">Business Type</label>
+                                        <select class="form-select" id="businessType" required>
+                                            <option value="">Select Business Type</option>
+                                            <option value="retail">Retail/E-commerce</option>
+                                            <option value="service">Service Business</option>
+                                            <option value="manufacturing">Manufacturing</option>
+                                            <option value="technology">Technology/Software</option>
+                                            <option value="food">Food & Beverage</option>
+                                            <option value="consulting">Consulting</option>
+                                        </select>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="targetMarket" class="form-label">Target Market</label>
+                                        <textarea class="form-control" id="targetMarket" rows="3" required></textarea>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="missionStatement" class="form-label">Mission Statement</label>
+                                        <textarea class="form-control" id="missionStatement" rows="3" required></textarea>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="competitiveAdvantage" class="form-label">Competitive Advantage</label>
+                                        <textarea class="form-control" id="competitiveAdvantage" rows="3" required></textarea>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="fundingNeeds" class="form-label">Funding Requirements</label>
+                                        <input type="text" class="form-control" id="fundingNeeds" required>
+                                    </div>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-primary w-100">
+                                <i class="fas fa-eye me-2"></i>View Business Plan
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Analytics Section -->
+            <div id="analytics" class="section">
+                <div class="dashboard-card">
+                    <div class="card-header">
+                        <h5><i class="fas fa-chart-line me-2"></i>Analytics Dashboard</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <canvas id="revenueChart" width="400" height="200"></canvas>
+                            </div>
+                            <div class="col-md-6">
+                                <canvas id="userGrowthChart" width="400" height="200"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Settings Section -->
+            <div id="settings" class="section">
+                <div class="dashboard-card">
+                    <div class="card-header">
+                        <h5><i class="fas fa-cog me-2"></i>Settings</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h6>Profile Settings</h6>
+                                <div class="mb-3">
+                                    <label class="form-label">Name</label>
+                                    <input type="text" class="form-control" value="John Doe">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Email</label>
+                                    <input type="email" class="form-control" value="john@example.com">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <h6>Preferences</h6>
+                                <div class="mb-3">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="notifications" checked>
+                                        <label class="form-check-label" for="notifications">
+                                            Email Notifications
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="darkMode">
+                                        <label class="form-check-label" for="darkMode">
+                                            Dark Mode
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <button class="btn btn-primary">Save Settings</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="assets/js/dashboard.js"></script>
+</body>
+</html>

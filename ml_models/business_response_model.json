@@ -1,0 +1,51 @@
+{
+  "response_categories": {
+    "business_planning": 0,
+    "financial": 1,
+    "funding": 2,
+    "legal": 3,
+    "marketing": 4,
+    "operations": 5
+  },
+  "model_info": {
+    "type": "RandomForestClassifier",
+    "features": [
+      "best",
+      "business",
+      "business plan",
+      "business scale",
+      "cash",
+      "cash flow",
+      "consider",
+      "create",
+      "difference",
+      "equity",
+      "expansion",
+      "financial",
+      "financing",
+      "flow",
+      "funding",
+      "grow",
+      "growth",
+      "improve",
+      "investors",
+      "know",
+      "legal",
+      "manage",
+      "market",
+      "marketing",
+      "need",
+      "operations",
+      "optimize",
+      "plan",
+      "scale",
+      "scale business",
+      "start",
+      "startup",
+      "strategies",
+      "strategies best",
+      "strategy",
+      "success"
+    ]
+  }
+}
