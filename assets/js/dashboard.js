@@ -112,6 +112,15 @@ class Dashboard {
             contentArea.classList.remove('chat-section');
         }
 
+        // Initialize section-specific functionality
+        if (sectionId === 'analytics') {
+            this.initCharts();
+        } else if (sectionId === 'settings') {
+            this.loadSettings();
+        } else if (sectionId === 'business-plan') {
+            this.loadBusinessPlanTemplates();
+        }
+
         // Update page title
         const titles = {
             'dashboard': 'Dashboard',
@@ -494,26 +503,75 @@ class Dashboard {
 
         results.forEach(result => {
             const text = result.textContent.toLowerCase();
+            const businessType = result.getAttribute('data-business-type');
+
+            // Enhanced search logic
+            let matches = false;
+
+            // Search in title, description, and business type
             if (text.includes(lowerQuery)) {
+                matches = true;
+            }
+
+            // Search for specific business types
+            if (businessType && businessType.toLowerCase().includes(lowerQuery)) {
+                matches = true;
+            }
+
+            // Search for keywords
+            const keywords = ['hiking', 'volcano', 'restaurant', 'eco', 'food', 'coffee', 'transport', 'souvenir', 'guide', 'farming', 'guesthouse', 'internet', 'cafe'];
+            if (keywords.some(keyword => keyword.includes(lowerQuery) && text.includes(keyword))) {
+                matches = true;
+            }
+
+            if (matches) {
                 result.style.display = 'block';
                 result.style.animation = 'fadeIn 0.3s ease-in';
             } else {
                 result.style.display = 'none';
             }
         });
+
+        // Update search results count
+        this.updateSearchResultsCount();
     }
 
     filterSearchResults(category) {
         const results = document.querySelectorAll('.search-result-item');
 
         results.forEach(result => {
+            const resultCategory = result.getAttribute('data-category');
+
             if (category === 'all') {
                 result.style.display = 'block';
-            } else {
-                // This would be enhanced with actual category data
+            } else if (resultCategory === category) {
                 result.style.display = 'block';
+            } else {
+                result.style.display = 'none';
             }
         });
+
+        // Update search results count
+        this.updateSearchResultsCount();
+    }
+
+    updateSearchResultsCount() {
+        const visibleResults = document.querySelectorAll('.search-result-item[style*="block"], .search-result-item:not([style*="none"])');
+        const count = visibleResults.length;
+
+        // Add or update results count display
+        let countElement = document.getElementById('search-results-count');
+        if (!countElement) {
+            countElement = document.createElement('div');
+            countElement.id = 'search-results-count';
+            countElement.className = 'search-results-count';
+            countElement.style.cssText = 'margin: 10px 0; padding: 8px 12px; background: #e3f2fd; border-radius: 4px; font-size: 14px; color: #1976d2;';
+
+            const searchResults = document.getElementById('search-results');
+            searchResults.parentNode.insertBefore(countElement, searchResults);
+        }
+
+        countElement.textContent = `Found ${count} result${count !== 1 ? 's' : ''}`;
     }
 
     // Business Plan System
@@ -529,6 +587,7 @@ class Dashboard {
 
         // Add export functionality to global scope
         window.exportBusinessPlan = this.exportBusinessPlan.bind(this);
+        window.loadQuickTemplate = this.loadQuickTemplate.bind(this);
     }
 
     async generateBusinessPlan() {
@@ -679,8 +738,159 @@ class Dashboard {
         // Charts will be initialized when analytics section is shown
     }
 
-    initCharts() {
-        // Revenue Chart
+    // Load real analytics data from API
+    async loadAnalyticsData() {
+        try {
+            const response = await fetch('api/analytics.php?action=all_analytics');
+            const result = await response.json();
+
+            if (result.success) {
+                return result.data;
+            } else {
+                throw new Error(result.error || 'Failed to load analytics data');
+            }
+        } catch (error) {
+            console.error('Error loading analytics data:', error);
+            throw error;
+        }
+    }
+
+    // Load specific analytics data
+    async loadSpecificAnalytics(type) {
+        try {
+            const response = await fetch(`api/analytics.php?action=${type}`);
+            const result = await response.json();
+
+            if (result.success) {
+                return result.data;
+            } else {
+                throw new Error(result.error || 'Failed to load analytics data');
+            }
+        } catch (error) {
+            console.error(`Error loading ${type} analytics:`, error);
+            throw error;
+        }
+    }
+
+    async initCharts() {
+        try {
+            // Load real analytics data
+            const analyticsData = await this.loadAnalyticsData();
+
+            // Revenue Chart - Musanze Business Revenue Trends
+            const revenueCtx = document.getElementById('revenueChart');
+            if (revenueCtx && !revenueCtx.chart) {
+                revenueCtx.chart = new Chart(revenueCtx.getContext('2d'), {
+                    type: 'line',
+                    data: analyticsData.revenue_trends,
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                display: true,
+                                position: 'top'
+                            },
+                            title: {
+                                display: true,
+                                text: 'Musanze Business Revenue Trends (Real Data)',
+                                font: {
+                                    size: 16,
+                                    weight: 'bold'
+                                }
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                title: {
+                                    display: true,
+                                    text: 'Revenue (M RWF)'
+                                },
+                                grid: {
+                                    color: 'rgba(0,0,0,0.1)'
+                                },
+                                ticks: {
+                                    callback: function (value) {
+                                        return value + 'M';
+                                    }
+                                }
+                            },
+                            x: {
+                                title: {
+                                    display: true,
+                                    text: 'Month'
+                                },
+                                grid: {
+                                    color: 'rgba(0,0,0,0.1)'
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+
+            // User Growth Chart - New Business Registrations
+            const userGrowthCtx = document.getElementById('userGrowthChart');
+            if (userGrowthCtx && !userGrowthCtx.chart) {
+                userGrowthCtx.chart = new Chart(userGrowthCtx.getContext('2d'), {
+                    type: 'bar',
+                    data: analyticsData.business_registrations,
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                display: true,
+                                position: 'top'
+                            },
+                            title: {
+                                display: true,
+                                text: 'New Business Registrations in Musanze (Real Data)',
+                                font: {
+                                    size: 16,
+                                    weight: 'bold'
+                                }
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                title: {
+                                    display: true,
+                                    text: 'Number of Businesses'
+                                },
+                                grid: {
+                                    color: 'rgba(0,0,0,0.1)'
+                                }
+                            },
+                            x: {
+                                title: {
+                                    display: true,
+                                    text: 'Month'
+                                },
+                                grid: {
+                                    color: 'rgba(0,0,0,0.1)'
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+
+            // Add additional analytics cards with real data
+            this.addAnalyticsCards(analyticsData.monthly_stats);
+
+        } catch (error) {
+            console.error('Error loading analytics data:', error);
+            // Fallback to static data if API fails
+            this.initChartsWithStaticData();
+        }
+    }
+
+    // Fallback method with static data
+    initChartsWithStaticData() {
+        // Revenue Chart - Musanze Business Revenue Trends
         const revenueCtx = document.getElementById('revenueChart');
         if (revenueCtx && !revenueCtx.chart) {
             revenueCtx.chart = new Chart(revenueCtx.getContext('2d'), {
@@ -688,29 +898,56 @@ class Dashboard {
                 data: {
                     labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
                     datasets: [{
-                        label: 'Revenue',
-                        data: [12000, 19000, 15000, 25000, 22000, 30000],
+                        label: 'Business Revenue (M RWF)',
+                        data: [12, 19, 15, 25, 22, 30],
                         borderColor: '#007bff',
                         backgroundColor: 'rgba(0, 123, 255, 0.1)',
                         tension: 0.4,
-                        fill: true
+                        fill: true,
+                        pointBackgroundColor: '#007bff',
+                        pointBorderColor: '#ffffff',
+                        pointBorderWidth: 2,
+                        pointRadius: 6
                     }]
                 },
                 options: {
                     responsive: true,
+                    maintainAspectRatio: false,
                     plugins: {
                         legend: {
-                            display: false
+                            display: true,
+                            position: 'top'
+                        },
+                        title: {
+                            display: true,
+                            text: 'Musanze Business Revenue Trends',
+                            font: {
+                                size: 16,
+                                weight: 'bold'
+                            }
                         }
                     },
                     scales: {
                         y: {
                             beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Revenue (M RWF)'
+                            },
                             grid: {
                                 color: 'rgba(0,0,0,0.1)'
+                            },
+                            ticks: {
+                                callback: function (value) {
+                                    return value + 'M';
+                                }
                             }
                         },
                         x: {
+                            title: {
+                                display: true,
+                                text: 'Month'
+                            },
                             grid: {
                                 color: 'rgba(0,0,0,0.1)'
                             }
@@ -720,7 +957,7 @@ class Dashboard {
             });
         }
 
-        // User Growth Chart
+        // User Growth Chart - New Business Registrations
         const userGrowthCtx = document.getElementById('userGrowthChart');
         if (userGrowthCtx && !userGrowthCtx.chart) {
             userGrowthCtx.chart = new Chart(userGrowthCtx.getContext('2d'), {
@@ -728,28 +965,54 @@ class Dashboard {
                 data: {
                     labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
                     datasets: [{
-                        label: 'New Users',
-                        data: [100, 150, 200, 180, 250, 300],
-                        backgroundColor: 'rgba(40, 167, 69, 0.8)',
+                        label: 'New Business Registrations',
+                        data: [8, 12, 15, 18, 22, 28],
+                        backgroundColor: [
+                            'rgba(40, 167, 69, 0.8)',
+                            'rgba(40, 167, 69, 0.8)',
+                            'rgba(40, 167, 69, 0.8)',
+                            'rgba(40, 167, 69, 0.8)',
+                            'rgba(40, 167, 69, 0.8)',
+                            'rgba(40, 167, 69, 0.8)'
+                        ],
                         borderColor: '#28a745',
-                        borderWidth: 1
+                        borderWidth: 2,
+                        borderRadius: 4
                     }]
                 },
                 options: {
                     responsive: true,
+                    maintainAspectRatio: false,
                     plugins: {
                         legend: {
-                            display: false
+                            display: true,
+                            position: 'top'
+                        },
+                        title: {
+                            display: true,
+                            text: 'New Business Registrations in Musanze',
+                            font: {
+                                size: 16,
+                                weight: 'bold'
+                            }
                         }
                     },
                     scales: {
                         y: {
                             beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Number of Businesses'
+                            },
                             grid: {
                                 color: 'rgba(0,0,0,0.1)'
                             }
                         },
                         x: {
+                            title: {
+                                display: true,
+                                text: 'Month'
+                            },
                             grid: {
                                 color: 'rgba(0,0,0,0.1)'
                             }
@@ -757,6 +1020,69 @@ class Dashboard {
                     }
                 }
             });
+        }
+
+        // Add additional analytics cards
+        this.addAnalyticsCards();
+    }
+
+    // Add additional analytics cards
+    addAnalyticsCards(realData = null) {
+        const analyticsCard = document.querySelector('#analytics .dashboard-card .card-body');
+        if (analyticsCard && !document.getElementById('analytics-cards')) {
+            const analyticsCardsDiv = document.createElement('div');
+            analyticsCardsDiv.id = 'analytics-cards';
+            analyticsCardsDiv.className = 'row mt-4';
+
+            // Use real data if available, otherwise use static data
+            const totalBusinesses = realData?.total_businesses || 156;
+            const activeUsers = realData?.active_users || 2847;
+            const revenueGenerated = realData?.revenue_generated ? (realData.revenue_generated / 1000000).toFixed(1) : '32.4';
+            const successRate = realData?.success_rate || 94;
+            const newRegistrations = realData?.new_registrations || 23;
+            const userGrowth = realData ? '+8% this month' : '+8% this month';
+            const businessGrowth = realData ? `+${Math.round((newRegistrations / totalBusinesses) * 100)}% this month` : '+12% this month';
+
+            analyticsCardsDiv.innerHTML = `
+                <div class="col-md-3 mb-3">
+                    <div class="card bg-primary text-white">
+                        <div class="card-body text-center">
+                            <h5 class="card-title">Total Businesses</h5>
+                            <h2 class="mb-0">${totalBusinesses}</h2>
+                            <small>${businessGrowth}</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <div class="card bg-success text-white">
+                        <div class="card-body text-center">
+                            <h5 class="card-title">Active Users</h5>
+                            <h2 class="mb-0">${activeUsers.toLocaleString()}</h2>
+                            <small>${userGrowth}</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <div class="card bg-info text-white">
+                        <div class="card-body text-center">
+                            <h5 class="card-title">Revenue Generated</h5>
+                            <h2 class="mb-0">${revenueGenerated}M</h2>
+                            <small>RWF this month</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <div class="card bg-warning text-white">
+                        <div class="card-body text-center">
+                            <h5 class="card-title">Success Rate</h5>
+                            <h2 class="mb-0">${successRate}%</h2>
+                            <small>Business success rate</small>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            analyticsCard.appendChild(analyticsCardsDiv);
         }
     }
 
@@ -1018,6 +1344,362 @@ class Dashboard {
             this.showNotification('Error generating business plan. Please try again.', 'error');
         }
     }
+
+    // Export guide functionality
+    async exportGuide(guideType, format) {
+        try {
+            this.showNotification('Generating guide...', 'info');
+
+            const response = await fetch('api/export-business-plan.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    business_type: guideType,
+                    format: format,
+                    business_data: { type: 'guide' }
+                })
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+                if (format === 'pdf' || format === 'word') {
+                    const newWindow = window.open('', '_blank');
+                    newWindow.document.write(result.html);
+                    newWindow.document.close();
+                    this.showNotification('Guide opened in new window! Use browser print function to save as ' + format.toUpperCase(), 'success');
+                }
+            } else {
+                this.showNotification('Error generating guide: ' + result.error, 'error');
+            }
+        } catch (error) {
+            console.error('Guide export error:', error);
+            this.showNotification('Error generating guide. Please try again.', 'error');
+        }
+    }
+
+    // Export toolkit functionality
+    async exportToolkit(toolkitType, format) {
+        try {
+            this.showNotification('Generating toolkit...', 'info');
+
+            const response = await fetch('api/export-business-plan.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    business_type: toolkitType,
+                    format: format,
+                    business_data: { type: 'toolkit' }
+                })
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+                if (format === 'pdf') {
+                    const newWindow = window.open('', '_blank');
+                    newWindow.document.write(result.html);
+                    newWindow.document.close();
+                    this.showNotification('Toolkit opened in new window! Use browser print function to save as PDF', 'success');
+                } else if (format === 'excel') {
+                    const blob = new Blob([result.csv], { type: 'text/csv' });
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = result.filename;
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    window.URL.revokeObjectURL(url);
+                    this.showNotification('Toolkit downloaded successfully!', 'success');
+                }
+            } else {
+                this.showNotification('Error generating toolkit: ' + result.error, 'error');
+            }
+        } catch (error) {
+            console.error('Toolkit export error:', error);
+            this.showNotification('Error generating toolkit. Please try again.', 'error');
+        }
+    }
+
+    // Export checklist functionality
+    async exportChecklist(checklistType, format) {
+        try {
+            this.showNotification('Generating checklist...', 'info');
+
+            const response = await fetch('api/export-business-plan.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    business_type: checklistType,
+                    format: format,
+                    business_data: { type: 'checklist' }
+                })
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+                if (format === 'pdf' || format === 'word') {
+                    const newWindow = window.open('', '_blank');
+                    newWindow.document.write(result.html);
+                    newWindow.document.close();
+                    this.showNotification('Checklist opened in new window! Use browser print function to save as ' + format.toUpperCase(), 'success');
+                }
+            } else {
+                this.showNotification('Error generating checklist: ' + result.error, 'error');
+            }
+        } catch (error) {
+            console.error('Checklist export error:', error);
+            this.showNotification('Error generating checklist. Please try again.', 'error');
+        }
+    }
+
+    // Export framework functionality
+    async exportFramework(frameworkType, format) {
+        try {
+            this.showNotification('Generating framework...', 'info');
+
+            const response = await fetch('api/export-business-plan.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    business_type: frameworkType,
+                    format: format,
+                    business_data: { type: 'framework' }
+                })
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+                if (format === 'pdf' || format === 'powerpoint') {
+                    const newWindow = window.open('', '_blank');
+                    newWindow.document.write(result.html);
+                    newWindow.document.close();
+                    this.showNotification('Framework opened in new window! Use browser print function to save as ' + format.toUpperCase(), 'success');
+                }
+            } else {
+                this.showNotification('Error generating framework: ' + result.error, 'error');
+            }
+        } catch (error) {
+            console.error('Framework export error:', error);
+            this.showNotification('Error generating framework. Please try again.', 'error');
+        }
+    }
+
+    // Load settings functionality
+    loadSettings() {
+        // Load user settings from localStorage or API
+        const savedSettings = localStorage.getItem('innostart_settings');
+        if (savedSettings) {
+            const settings = JSON.parse(savedSettings);
+
+            // Apply saved settings
+            const nameInput = document.querySelector('#settings input[type="text"]');
+            const emailInput = document.querySelector('#settings input[type="email"]');
+            const notificationsCheckbox = document.getElementById('notifications');
+            const darkModeCheckbox = document.getElementById('darkMode');
+
+            if (nameInput && settings.name) nameInput.value = settings.name;
+            if (emailInput && settings.email) emailInput.value = settings.email;
+            if (notificationsCheckbox) notificationsCheckbox.checked = settings.notifications !== false;
+            if (darkModeCheckbox) darkModeCheckbox.checked = settings.darkMode === true;
+        }
+
+        // Setup settings save functionality
+        const saveButton = document.querySelector('#settings .btn-primary');
+        if (saveButton) {
+            saveButton.addEventListener('click', () => this.saveSettings());
+        }
+
+        // Setup dark mode toggle
+        const darkModeCheckbox = document.getElementById('darkMode');
+        if (darkModeCheckbox) {
+            darkModeCheckbox.addEventListener('change', (e) => this.toggleDarkMode(e.target.checked));
+        }
+    }
+
+    // Save settings functionality
+    saveSettings() {
+        const settings = {
+            name: document.querySelector('#settings input[type="text"]').value,
+            email: document.querySelector('#settings input[type="email"]').value,
+            notifications: document.getElementById('notifications').checked,
+            darkMode: document.getElementById('darkMode').checked
+        };
+
+        // Save to localStorage
+        localStorage.setItem('innostart_settings', JSON.stringify(settings));
+
+        // Show success notification
+        this.showNotification('Settings saved successfully!', 'success');
+
+        // Apply dark mode if enabled
+        this.toggleDarkMode(settings.darkMode);
+    }
+
+    // Toggle dark mode
+    toggleDarkMode(enabled) {
+        if (enabled) {
+            document.body.classList.add('dark-mode');
+        } else {
+            document.body.classList.remove('dark-mode');
+        }
+    }
+
+    // Load business plan templates
+    loadBusinessPlanTemplates() {
+        // Update business type options with Musanze-specific businesses
+        const businessTypeSelect = document.getElementById('businessType');
+        if (businessTypeSelect) {
+            businessTypeSelect.innerHTML = `
+                <option value="">Select Business Type</option>
+                <option value="mountain-hiking">Mountain Hiking Tours</option>
+                <option value="volcano-trekking">Volcano Trekking</option>
+                <option value="local-restaurant">Local Restaurant</option>
+                <option value="eco-lodges">Eco-lodges</option>
+                <option value="food-processing">Food Processing</option>
+                <option value="coffee-processing">Coffee Processing</option>
+                <option value="local-transport">Local Transport</option>
+                <option value="souvenir-shop">Souvenir Shop</option>
+                <option value="local-guide">Local Guide Services</option>
+                <option value="organic-farming">Organic Farming</option>
+                <option value="guesthouse">Guesthouse</option>
+                <option value="internet-cafe">Internet Cafe</option>
+                <option value="retail">Retail/E-commerce</option>
+                <option value="service">Service Business</option>
+                <option value="manufacturing">Manufacturing</option>
+                <option value="technology">Technology/Software</option>
+                <option value="food">Food & Beverage</option>
+                <option value="consulting">Consulting</option>
+            `;
+        }
+
+        // Add quick template buttons
+        this.addQuickTemplateButtons();
+    }
+
+    // Add quick template buttons
+    addQuickTemplateButtons() {
+        const businessPlanCard = document.querySelector('#business-plan .dashboard-card .card-body');
+        if (businessPlanCard && !document.getElementById('quick-templates')) {
+            const quickTemplatesDiv = document.createElement('div');
+            quickTemplatesDiv.id = 'quick-templates';
+            quickTemplatesDiv.className = 'mb-4';
+            quickTemplatesDiv.innerHTML = `
+                <h6 class="mb-3">🚀 Quick Templates</h6>
+                <div class="row">
+                    <div class="col-md-4 mb-2">
+                        <button class="btn btn-outline-primary btn-sm w-100" onclick="loadQuickTemplate('mountain-hiking')">
+                            🏔️ Mountain Hiking
+                        </button>
+                    </div>
+                    <div class="col-md-4 mb-2">
+                        <button class="btn btn-outline-primary btn-sm w-100" onclick="loadQuickTemplate('volcano-trekking')">
+                            🌋 Volcano Trekking
+                        </button>
+                    </div>
+                    <div class="col-md-4 mb-2">
+                        <button class="btn btn-outline-primary btn-sm w-100" onclick="loadQuickTemplate('local-restaurant')">
+                            🍽️ Local Restaurant
+                        </button>
+                    </div>
+                    <div class="col-md-4 mb-2">
+                        <button class="btn btn-outline-primary btn-sm w-100" onclick="loadQuickTemplate('eco-lodges')">
+                            🌿 Eco-lodges
+                        </button>
+                    </div>
+                    <div class="col-md-4 mb-2">
+                        <button class="btn btn-outline-primary btn-sm w-100" onclick="loadQuickTemplate('coffee-processing')">
+                            ☕ Coffee Processing
+                        </button>
+                    </div>
+                    <div class="col-md-4 mb-2">
+                        <button class="btn btn-outline-primary btn-sm w-100" onclick="loadQuickTemplate('organic-farming')">
+                            🌱 Organic Farming
+                        </button>
+                    </div>
+                </div>
+            `;
+
+            businessPlanCard.insertBefore(quickTemplatesDiv, businessPlanCard.firstChild);
+        }
+    }
+
+    // Load quick template
+    loadQuickTemplate(templateType) {
+        const templates = {
+            'mountain-hiking': {
+                name: 'Mountain Hiking Tours',
+                type: 'mountain-hiking',
+                market: 'International tourists and adventure seekers visiting Musanze for volcano and mountain experiences',
+                mission: 'To provide safe, educational, and memorable mountain hiking experiences while promoting sustainable tourism in Musanze',
+                advantage: 'Experienced local guides, unique volcano access, cultural integration, safety protocols',
+                funding: '4.3M - 16M RWF'
+            },
+            'volcano-trekking': {
+                name: 'Volcano Trekking Services',
+                type: 'volcano-trekking',
+                market: 'Premium adventure tourists seeking unique volcano trekking experiences',
+                mission: 'To offer world-class volcano trekking experiences with expert guides and safety equipment',
+                advantage: 'Premium equipment, certified guides, exclusive access, safety record',
+                funding: '5M - 18M RWF'
+            },
+            'local-restaurant': {
+                name: 'Local Restaurant',
+                type: 'local-restaurant',
+                market: 'International tourists, local residents, and business travelers in Musanze',
+                mission: 'To serve authentic Rwandan cuisine using fresh local ingredients',
+                advantage: 'Authentic recipes, local sourcing, cultural experience, tourist-friendly',
+                funding: '4.8M - 18M RWF'
+            },
+            'eco-lodges': {
+                name: 'Eco-lodges',
+                type: 'eco-lodges',
+                market: 'Eco-conscious tourists and nature lovers',
+                mission: 'To provide sustainable accommodation that respects the environment',
+                advantage: 'Eco-friendly practices, unique location, sustainability focus',
+                funding: '26M - 86M RWF'
+            },
+            'coffee-processing': {
+                name: 'Coffee Processing',
+                type: 'coffee-processing',
+                market: 'Local cafes, hotels, tourists, and export markets',
+                mission: 'To process and export premium Rwandan coffee from Musanze',
+                advantage: 'Premium quality, direct farmer relationships, export experience',
+                funding: '33M - 93M RWF'
+            },
+            'organic-farming': {
+                name: 'Organic Farming',
+                type: 'organic-farming',
+                market: 'Health-conscious consumers, restaurants, hotels, and export markets',
+                mission: 'To produce high-quality organic vegetables and fruits sustainably',
+                advantage: 'Organic certification, sustainable practices, local market knowledge',
+                funding: '10M - 38M RWF'
+            }
+        };
+
+        const template = templates[templateType];
+        if (template) {
+            document.getElementById('businessName').value = template.name;
+            document.getElementById('businessType').value = template.type;
+            document.getElementById('targetMarket').value = template.market;
+            document.getElementById('missionStatement').value = template.mission;
+            document.getElementById('competitiveAdvantage').value = template.advantage;
+            document.getElementById('fundingNeeds').value = template.funding;
+
+            this.showNotification('Template loaded successfully!', 'success');
+        }
+    }
 }
 
 // Initialize Dashboard when DOM is loaded
@@ -1050,6 +1732,41 @@ function closeExportModal() {
     const modal = document.getElementById('exportModal');
     if (modal) {
         modal.remove();
+    }
+}
+
+// Export guide function
+async function exportGuide(guideType, format) {
+    if (window.dashboard) {
+        await window.dashboard.exportGuide(guideType, format);
+    }
+}
+
+// Export toolkit function
+async function exportToolkit(toolkitType, format) {
+    if (window.dashboard) {
+        await window.dashboard.exportToolkit(toolkitType, format);
+    }
+}
+
+// Export checklist function
+async function exportChecklist(checklistType, format) {
+    if (window.dashboard) {
+        await window.dashboard.exportChecklist(checklistType, format);
+    }
+}
+
+// Export framework function
+async function exportFramework(frameworkType, format) {
+    if (window.dashboard) {
+        await window.dashboard.exportFramework(frameworkType, format);
+    }
+}
+
+// Load quick template function
+function loadQuickTemplate(templateType) {
+    if (window.dashboard) {
+        window.dashboard.loadQuickTemplate(templateType);
     }
 }
 

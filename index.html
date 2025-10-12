@@ -60,10 +60,55 @@
                         dashboard.
                     </p>
                     <div class="d-flex gap-3 flex-wrap">
-                        <a href="login.html" class="btn btn-primary btn-lg">
+                        <a href="login.html" 
+                           class="btn btn-primary btn-lg clickable-button"
+                           id="getStartedBtn"
+                           style="
+                               display: inline-block !important;
+                               cursor: pointer !important;
+                               pointer-events: auto !important;
+                               text-decoration: none !important;
+                               background: linear-gradient(135deg, #007bff 0%, #0056b3 100%) !important;
+                               color: white !important;
+                               padding: 15px 30px !important;
+                               border-radius: 10px !important;
+                               border: none !important;
+                               font-weight: 600 !important;
+                               font-size: 1.1rem !important;
+                               transition: all 0.3s ease !important;
+                               position: relative !important;
+                               z-index: 100 !important;
+                               min-height: 50px !important;
+                               line-height: 1.2 !important;
+                           "
+                           onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 8px 25px rgba(0,0,0,0.3)'"
+                           onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'"
+                           onclick="console.log('Get Started clicked!'); window.location.href='login.html'; return false;">
                             <i class="fas fa-rocket me-2"></i>Get Started Free
                         </a>
-                        <button class="btn btn-outline-light btn-lg" onclick="scrollToSection('features')">
+                        <button class="btn btn-outline-light btn-lg clickable-button"
+                                id="seeHowItWorksBtn"
+                                type="button"
+                                style="
+                                    display: inline-block !important;
+                                    cursor: pointer !important;
+                                    pointer-events: auto !important;
+                                    background: rgba(255, 255, 255, 0.1) !important;
+                                    border: 2px solid rgba(255, 255, 255, 0.5) !important;
+                                    color: white !important;
+                                    padding: 15px 30px !important;
+                                    border-radius: 10px !important;
+                                    font-weight: 600 !important;
+                                    font-size: 1.1rem !important;
+                                    transition: all 0.3s ease !important;
+                                    position: relative !important;
+                                    z-index: 100 !important;
+                                    min-height: 50px !important;
+                                    line-height: 1.2 !important;
+                                "
+                                onmouseover="this.style.background='rgba(255,255,255,0.2)'; this.style.borderColor='white'; this.style.transform='translateY(-2px)'; this.style.boxShadow='0 8px 25px rgba(0,0,0,0.3)'"
+                                onmouseout="this.style.background='rgba(255,255,255,0.1)'; this.style.borderColor='rgba(255,255,255,0.5)'; this.style.transform='translateY(0)'; this.style.boxShadow='none'"
+                                onclick="console.log('See How It Works clicked!'); scrollToSection('features'); return false;">
                             <i class="fas fa-play me-2"></i>See How It Works
                         </button>
                     </div>
@@ -436,7 +481,121 @@
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Inline script to ensure scrollToSection is available immediately -->
+    <script>
+        function scrollToSection(sectionId) {
+            console.log('Inline scrollToSection called with:', sectionId);
+            const section = document.getElementById(sectionId);
+            if (section) {
+                section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                console.log('Successfully scrolled to:', sectionId);
+            } else {
+                console.error('Section not found:', sectionId);
+            }
+        }
+        
+        // Force button functionality
+        function forceButtonClickability() {
+            console.log('Forcing button clickability...');
+            
+            // Get Started button
+            const getStartedBtn = document.getElementById('getStartedBtn');
+            if (getStartedBtn) {
+                getStartedBtn.style.cursor = 'pointer';
+                getStartedBtn.style.pointerEvents = 'auto';
+                getStartedBtn.style.zIndex = '100';
+                getStartedBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    console.log('Get Started button clicked via force handler!');
+                    window.location.href = 'login.html';
+                });
+                console.log('Get Started button forced to be clickable');
+            }
+            
+            // See How It Works button
+            const seeHowBtn = document.getElementById('seeHowItWorksBtn');
+            if (seeHowBtn) {
+                seeHowBtn.style.cursor = 'pointer';
+                seeHowBtn.style.pointerEvents = 'auto';
+                seeHowBtn.style.zIndex = '100';
+                seeHowBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    console.log('See How It Works button clicked via force handler!');
+                    scrollToSection('features');
+                });
+                console.log('See How It Works button forced to be clickable');
+            }
+        }
+        
+        // Run immediately and on load
+        forceButtonClickability();
+        window.addEventListener('load', forceButtonClickability);
+        document.addEventListener('DOMContentLoaded', forceButtonClickability);
+    </script>
+
     <script src="assets/js/main.js?v=20241220"></script>
+
+    <!-- Debug Script -->
+    <script>
+        // Debug script to test button functionality
+        window.addEventListener('load', function () {
+            console.log('Page fully loaded');
+
+            // Test if buttons are clickable
+            const getStartedBtn = document.querySelector('a[href="login.html"]');
+            const seeHowItWorksBtn = document.getElementById('seeHowItWorksBtn');
+
+            console.log('Get Started button found:', getStartedBtn);
+            console.log('See How It Works button found:', seeHowItWorksBtn);
+
+            // Test scrollToSection function
+            if (typeof scrollToSection === 'function') {
+                console.log('✅ scrollToSection function is available');
+            } else {
+                console.error('❌ scrollToSection function is NOT available');
+            }
+
+            // Test if features section exists
+            const featuresSection = document.getElementById('features');
+            console.log('Features section found:', featuresSection);
+
+            // Add additional debug listeners
+            if (getStartedBtn) {
+                getStartedBtn.addEventListener('click', function () {
+                    console.log('Get Started Free button clicked via debug listener');
+                });
+                console.log('Get Started Free button found and debug listener added.');
+            } else {
+                console.log('Get Started Free button not found.');
+            }
+
+            if (seeHowItWorksBtn) {
+                seeHowItWorksBtn.addEventListener('click', function () {
+                    console.log('See How It Works button clicked via debug listener');
+                });
+                console.log('See How It Works button found and debug listener added.');
+            } else {
+                console.log('See How It Works button not found.');
+            }
+        });
+
+        // Global function for testing
+        window.testScrollToSection = function () {
+            console.log('Testing scrollToSection function...');
+            if (typeof scrollToSection === 'function') {
+                scrollToSection('features');
+            } else {
+                console.error('scrollToSection function not available');
+            }
+        };
+
+        // Global function for testing login redirect
+        window.testLoginRedirect = function () {
+            console.log('Testing login redirect...');
+            window.location.href = 'login.html';
+        };
+    </script>
 </body>
 
 </html>

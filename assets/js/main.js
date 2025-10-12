@@ -4,12 +4,136 @@
 let chatHistory = [];
 let currentProjections = null;
 
+// Scroll to specific section - Define early to avoid reference errors
+function scrollToSection(sectionId) {
+    console.log('scrollToSection called with:', sectionId);
+
+    // Try multiple ways to find the section
+    let section = document.getElementById(sectionId);
+
+    if (!section) {
+        // Try finding by class or other attributes
+        section = document.querySelector(`[id="${sectionId}"]`);
+    }
+
+    if (!section) {
+        // Try finding by data attribute
+        section = document.querySelector(`[data-section="${sectionId}"]`);
+    }
+
+    console.log('Section found:', section);
+
+    if (section) {
+        try {
+            section.scrollIntoView({
+                behavior: 'smooth',
+                block: 'start'
+            });
+            console.log('Successfully scrolling to section:', sectionId);
+        } catch (error) {
+            console.error('Error scrolling to section:', error);
+            // Fallback to instant scroll
+            section.scrollIntoView();
+        }
+    } else {
+        console.error('Section not found:', sectionId);
+        // Fallback: scroll to top
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+}
+
 // Initialize the application
 document.addEventListener('DOMContentLoaded', function () {
+    console.log('DOM loaded, initializing InnoStart...');
     initializeApp();
     setupEventListeners();
     setupSmoothScrolling();
+    setupButtonHandlers();
+
+    // Test scrollToSection function
+    console.log('scrollToSection function available:', typeof scrollToSection === 'function');
 });
+
+// Setup button handlers with multiple fallback methods
+function setupButtonHandlers() {
+    console.log('Setting up button handlers...');
+
+    // Get Started Free button - multiple selectors
+    const getStartedSelectors = [
+        'a[href="login.html"]',
+        '.btn-primary',
+        'a.btn-primary'
+    ];
+
+    let getStartedBtn = null;
+    for (let selector of getStartedSelectors) {
+        getStartedBtn = document.querySelector(selector);
+        if (getStartedBtn) break;
+    }
+
+    if (getStartedBtn) {
+        console.log('Get Started Free button found:', getStartedBtn);
+
+        // Remove any existing event listeners
+        getStartedBtn.onclick = null;
+
+        // Add multiple event listeners
+        getStartedBtn.addEventListener('click', function (e) {
+            console.log('Get Started Free button clicked!');
+            // Let the default link behavior work
+        });
+
+        // Also add onclick as backup
+        getStartedBtn.onclick = function (e) {
+            console.log('Get Started Free button clicked via onclick!');
+            window.location.href = 'login.html';
+        };
+
+        console.log('Get Started Free button handlers added');
+    } else {
+        console.log('Get Started Free button not found');
+    }
+
+    // See How It Works button - multiple selectors
+    const seeHowSelectors = [
+        '#seeHowItWorksBtn',
+        'button[onclick*="scrollToSection"]',
+        '.btn-outline-light'
+    ];
+
+    let seeHowBtn = null;
+    for (let selector of seeHowSelectors) {
+        seeHowBtn = document.querySelector(selector);
+        if (seeHowBtn && seeHowBtn.textContent.includes('See How It Works')) break;
+    }
+
+    if (seeHowBtn) {
+        console.log('See How It Works button found:', seeHowBtn);
+
+        // Remove any existing event listeners
+        seeHowBtn.onclick = null;
+
+        // Add multiple event listeners
+        seeHowBtn.addEventListener('click', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            console.log('See How It Works button clicked via addEventListener!');
+            scrollToSection('features');
+        });
+
+        // Also add onclick as backup
+        seeHowBtn.onclick = function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            console.log('See How It Works button clicked via onclick!');
+            scrollToSection('features');
+        };
+
+        console.log('See How It Works button handlers added');
+    } else {
+        console.log('See How It Works button not found');
+    }
+}
 
 // Initialize application
 function initializeApp() {
@@ -74,16 +198,6 @@ function setupSmoothScrolling() {
     });
 }
 
-// Scroll to specific section
-function scrollToSection(sectionId) {
-    const section = document.getElementById(sectionId);
-    if (section) {
-        section.scrollIntoView({
-            behavior: 'smooth',
-            block: 'start'
-        });
-    }
-}
 
 // Chat functionality
 async function sendChatMessage() {

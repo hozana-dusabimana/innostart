@@ -1,11 +1,75 @@
 {
     "stats": {
-        "active_projects": 8,
+        "active_projects": 12,
         "revenue_generated": 32450000,
-        "total_users": 847,
-        "success_rate": 92
+        "total_users": 2847,
+        "success_rate": 94,
+        "total_businesses": 156,
+        "new_registrations": 23,
+        "active_sessions": 45,
+        "page_views_today": 287,
+        "business_plans_generated": 12,
+        "chat_messages": 38
+    },
+    "analytics": {
+        "revenue_trends": {
+            "jan": 12.5,
+            "feb": 19.2,
+            "mar": 15.8,
+            "apr": 25.1,
+            "may": 22.3,
+            "jun": 30.4
+        },
+        "business_registrations": {
+            "jan": 8,
+            "feb": 12,
+            "mar": 15,
+            "apr": 18,
+            "may": 22,
+            "jun": 28
+        },
+        "user_growth": {
+            "jan": 2100,
+            "feb": 2250,
+            "mar": 2400,
+            "apr": 2550,
+            "may": 2700,
+            "jun": 2847
+        },
+        "success_rates": {
+            "mountain_hiking": 92,
+            "volcano_trekking": 88,
+            "local_restaurant": 95,
+            "eco_lodges": 90,
+            "food_processing": 87,
+            "coffee_processing": 94,
+            "local_transport": 96,
+            "souvenir_shop": 89,
+            "local_guide": 91,
+            "organic_farming": 93,
+            "guesthouse": 88,
+            "internet_cafe": 85
+        }
     },
     "recent_activities": [
+        {
+            "id": 21,
+            "type": "business_plan",
+            "title": "Business Plan Created",
+            "description": "Organic Farming business plan generated successfully",
+            "timestamp": 1760274078,
+            "icon": "fas fa-file-alt",
+            "color": "primary"
+        },
+        {
+            "id": 21,
+            "type": "business_plan",
+            "title": "Business Plan Created",
+            "description": "My Test Business business plan generated successfully",
+            "timestamp": 1760273686,
+            "icon": "fas fa-file-alt",
+            "color": "primary"
+        },
         {
             "id": 21,
             "type": "chat",
@@ -165,24 +229,6 @@
             "title": "AI Chat Session",
             "description": "Discussed: a",
             "timestamp": 1760271243,
-            "icon": "fas fa-comments",
-            "color": "success"
-        },
-        {
-            "id": 21,
-            "type": "chat",
-            "title": "AI Chat Session",
-            "description": "Discussed: a",
-            "timestamp": 1760271243,
-            "icon": "fas fa-comments",
-            "color": "success"
-        },
-        {
-            "id": 21,
-            "type": "chat",
-            "title": "AI Chat Session",
-            "description": "Discussed: a",
-            "timestamp": 1760271242,
             "icon": "fas fa-comments",
             "color": "success"
         }

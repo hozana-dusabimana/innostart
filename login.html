@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -149,49 +150,25 @@
         }
 
         @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
+            0% {
+                transform: rotate(0deg);
+            }
 
-        .demo-credentials {
-            background: #e3f2fd;
-            border: 1px solid #bbdefb;
-            border-radius: 10px;
-            padding: 15px;
-            margin-bottom: 20px;
-            font-size: 14px;
-        }
-
-        .demo-credentials h6 {
-            color: #1976d2;
-            margin-bottom: 10px;
-            font-weight: 600;
-        }
-
-        .demo-credentials p {
-            margin: 5px 0;
-            color: #424242;
-        }
-
-        .demo-credentials strong {
-            color: #1976d2;
+            100% {
+                transform: rotate(360deg);
+            }
         }
     </style>
 </head>
+
 <body>
     <div class="login-container">
         <div class="login-header">
             <h1><i class="fas fa-rocket me-2"></i>InnoStart</h1>
             <p>Welcome back! Please sign in to continue</p>
         </div>
-        
-        <div class="login-body">
-            <div class="demo-credentials">
-                <h6><i class="fas fa-info-circle me-2"></i>Demo Credentials</h6>
-                <p><strong>Email:</strong> admin@innostart.com</p>
-                <p><strong>Password:</strong> admin123</p>
-            </div>
 
+        <div class="login-body">
             <div id="alert-container"></div>
 
             <form id="loginForm">
@@ -199,8 +176,8 @@
                     <label for="email" class="form-label">Email Address</label>
                     <div class="input-group">
                         <i class="fas fa-envelope"></i>
-                        <input type="email" class="form-control" id="email" name="email" 
-                               placeholder="Enter your email" required>
+                        <input type="email" class="form-control" id="email" name="email"
+                            placeholder="Enter your email address" required>
                     </div>
                 </div>
 
@@ -208,8 +185,8 @@
                     <label for="password" class="form-label">Password</label>
                     <div class="input-group">
                         <i class="fas fa-lock"></i>
-                        <input type="password" class="form-control" id="password" name="password" 
-                               placeholder="Enter your password" required>
+                        <input type="password" class="form-control" id="password" name="password"
+                            placeholder="Enter your password" required>
                     </div>
                 </div>
 
@@ -235,33 +212,24 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        // Demo credentials for easy testing
-        const DEMO_EMAIL = 'admin@innostart.com';
-        const DEMO_PASSWORD = 'admin123';
-
-        // Auto-fill demo credentials
-        document.addEventListener('DOMContentLoaded', function() {
-            document.getElementById('email').value = DEMO_EMAIL;
-            document.getElementById('password').value = DEMO_PASSWORD;
-        });
 
         // Login form submission
-        document.getElementById('loginForm').addEventListener('submit', async function(e) {
+        document.getElementById('loginForm').addEventListener('submit', async function (e) {
             e.preventDefault();
-            
+
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
             const rememberMe = document.getElementById('rememberMe').checked;
-            
+
             // Show loading state
             const loginBtn = document.getElementById('loginBtn');
             const loginText = document.getElementById('loginText');
             const loginLoading = document.getElementById('loginLoading');
-            
+
             loginBtn.disabled = true;
             loginText.style.display = 'none';
             loginLoading.style.display = 'inline-block';
-            
+
             try {
                 const response = await fetch('api/auth.php', {
                     method: 'POST',
@@ -281,18 +249,18 @@
                     // Store user session
                     localStorage.setItem('user', JSON.stringify(result.user));
                     localStorage.setItem('isLoggedIn', 'true');
-                    
+
                     if (rememberMe) {
                         localStorage.setItem('rememberMe', 'true');
                     }
-                    
+
                     showAlert('Login successful! Redirecting to dashboard...', 'success');
-                    
+
                     // Redirect to dashboard after short delay
                     setTimeout(() => {
                         window.location.href = 'dashboard.html';
                     }, 1500);
-                    
+
                 } else {
                     showAlert(result.message || 'Login failed. Please check your credentials.', 'danger');
                 }
@@ -320,11 +288,11 @@
         }
 
         function showRegister() {
-            showAlert('Registration feature coming soon! For now, use the demo credentials above.', 'info');
+            showAlert('Registration feature coming soon!', 'info');
         }
 
         function forgotPassword() {
-            showAlert('Password reset feature coming soon! For now, use the demo credentials above.', 'info');
+            showAlert('Password reset feature coming soon!', 'info');
         }
 
         // Check if user is already logged in
@@ -333,12 +301,5 @@
         }
     </script>
 </body>
+
 </html>
-
-
-
-
-
-
-
-
