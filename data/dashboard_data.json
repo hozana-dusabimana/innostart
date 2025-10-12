@@ -1,0 +1,227 @@
+{
+    "stats": {
+        "active_projects": 8,
+        "revenue_generated": 32450000,
+        "total_users": 847,
+        "success_rate": 92
+    },
+    "recent_activities": [
+        {
+            "id": 21,
+            "type": "chat",
+            "title": "AI Chat Session",
+            "description": "Discussed: Local Guide Services:",
+            "timestamp": 1760272926,
+            "icon": "fas fa-comments",
+            "color": "success"
+        },
+        {
+            "id": 21,
+            "type": "chat",
+            "title": "AI Chat Session",
+            "description": "Discussed: Tourism & Hospitality:",
+            "timestamp": 1760272920,
+            "icon": "fas fa-comments",
+            "color": "success"
+        },
+        {
+            "id": 21,
+            "type": "chat",
+            "title": "AI Chat Session",
+            "description": "Discussed: bbusiness opportunities",
+            "timestamp": 1760272907,
+            "icon": "fas fa-comments",
+            "color": "success"
+        },
+        {
+            "id": 21,
+            "type": "chat",
+            "title": "AI Chat Session",
+            "description": "Discussed: export to pdf",
+            "timestamp": 1760272512,
+            "icon": "fas fa-comments",
+            "color": "success"
+        },
+        {
+            "id": 21,
+            "type": "chat",
+            "title": "AI Chat Session",
+            "description": "Discussed: Organic Farming:",
+            "timestamp": 1760272500,
+            "icon": "fas fa-comments",
+            "color": "success"
+        },
+        {
+            "id": 21,
+            "type": "chat",
+            "title": "AI Chat Session",
+            "description": "Discussed: Agriculture:",
+            "timestamp": 1760272495,
+            "icon": "fas fa-comments",
+            "color": "success"
+        },
+        {
+            "id": 21,
+            "type": "chat",
+            "title": "AI Chat Session",
+            "description": "Discussed: business opportunities",
+            "timestamp": 1760272488,
+            "icon": "fas fa-comments",
+            "color": "success"
+        },
+        {
+            "id": 21,
+            "type": "chat",
+            "title": "AI Chat Session",
+            "description": "Discussed: Quick Profit:",
+            "timestamp": 1760271532,
+            "icon": "fas fa-comments",
+            "color": "success"
+        },
+        {
+            "id": 21,
+            "type": "chat",
+            "title": "AI Chat Session",
+            "description": "Discussed: services",
+            "timestamp": 1760271525,
+            "icon": "fas fa-comments",
+            "color": "success"
+        },
+        {
+            "id": 21,
+            "type": "chat",
+            "title": "AI Chat Session",
+            "description": "Discussed: high revenue",
+            "timestamp": 1760271513,
+            "icon": "fas fa-comments",
+            "color": "success"
+        },
+        {
+            "id": 21,
+            "type": "chat",
+            "title": "AI Chat Session",
+            "description": "Discussed: services",
+            "timestamp": 1760271507,
+            "icon": "fas fa-comments",
+            "color": "success"
+        },
+        {
+            "id": 21,
+            "type": "chat",
+            "title": "AI Chat Session",
+            "description": "Discussed: pdf",
+            "timestamp": 1760271281,
+            "icon": "fas fa-comments",
+            "color": "success"
+        },
+        {
+            "id": 21,
+            "type": "chat",
+            "title": "AI Chat Session",
+            "description": "Discussed: Local Guide Services",
+            "timestamp": 1760271277,
+            "icon": "fas fa-comments",
+            "color": "success"
+        },
+        {
+            "id": 21,
+            "type": "chat",
+            "title": "AI Chat Session",
+            "description": "Discussed: 5-15M RWF",
+            "timestamp": 1760271269,
+            "icon": "fas fa-comments",
+            "color": "success"
+        },
+        {
+            "id": 21,
+            "type": "chat",
+            "title": "AI Chat Session",
+            "description": "Discussed: Retail:",
+            "timestamp": 1760271263,
+            "icon": "fas fa-comments",
+            "color": "success"
+        },
+        {
+            "id": 21,
+            "type": "chat",
+            "title": "AI Chat Session",
+            "description": "Discussed: business opportunities",
+            "timestamp": 1760271256,
+            "icon": "fas fa-comments",
+            "color": "success"
+        },
+        {
+            "id": 21,
+            "type": "chat",
+            "title": "AI Chat Session",
+            "description": "Discussed: as",
+            "timestamp": 1760271243,
+            "icon": "fas fa-comments",
+            "color": "success"
+        },
+        {
+            "id": 21,
+            "type": "chat",
+            "title": "AI Chat Session",
+            "description": "Discussed: a",
+            "timestamp": 1760271243,
+            "icon": "fas fa-comments",
+            "color": "success"
+        },
+        {
+            "id": 21,
+            "type": "chat",
+            "title": "AI Chat Session",
+            "description": "Discussed: a",
+            "timestamp": 1760271243,
+            "icon": "fas fa-comments",
+            "color": "success"
+        },
+        {
+            "id": 21,
+            "type": "chat",
+            "title": "AI Chat Session",
+            "description": "Discussed: a",
+            "timestamp": 1760271242,
+            "icon": "fas fa-comments",
+            "color": "success"
+        }
+    ],
+    "business_plans": [
+        {
+            "id": 1,
+            "name": "TechStart Solutions",
+            "type": "Technology",
+            "status": "completed",
+            "created_at": 1760247706
+        },
+        {
+            "id": 2,
+            "name": "Green Energy Co.",
+            "type": "Energy",
+            "status": "in_progress",
+            "created_at": 1760168506
+        },
+        {
+            "id": 3,
+            "name": "Local Food Delivery",
+            "type": "Food & Beverage",
+            "status": "completed",
+            "created_at": 1760082106
+        }
+    ],
+    "chat_sessions": [
+        {
+            "id": 1,
+            "topic": "Funding Strategies",
+            "messages_count": 12,
+            "last_activity": 1760240506
+        },
+        {
+            "id": 2,
+            "topic": "Market Analysis",
+            "messages_count": 8,
+            "last_activity": 1760168506
+        }
+    ]
+}

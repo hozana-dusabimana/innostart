@@ -16,6 +16,7 @@ class Dashboard {
         this.setupBusinessPlan();
         this.setupCharts();
         this.setupMobileMenu();
+        this.loadDashboardData();
     }
 
     // Authentication System
@@ -103,6 +104,14 @@ class Dashboard {
         // Add active class to corresponding nav link
         document.querySelector(`[data-section="${sectionId}"]`).classList.add('active');
 
+        // Update content area class for chat section
+        const contentArea = document.querySelector('.content-area');
+        if (sectionId === 'chat') {
+            contentArea.classList.add('chat-section');
+        } else {
+            contentArea.classList.remove('chat-section');
+        }
+
         // Update page title
         const titles = {
             'dashboard': 'Dashboard',
@@ -147,6 +156,12 @@ class Dashboard {
         const message = input.value.trim();
 
         if (message) {
+            // Check for export requests
+            if (this.handleExportRequest(message)) {
+                input.value = '';
+                return;
+            }
+
             this.addMessage(message, 'user');
             this.chatHistory.push({ role: 'user', content: message });
             input.value = '';
@@ -167,14 +182,26 @@ class Dashboard {
                     })
                 });
 
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
                 const data = await response.json();
 
                 // Hide typing indicator
                 this.hideTypingIndicator();
 
-                // Add AI response
-                this.addMessage(data.response, 'assistant');
-                this.chatHistory.push({ role: 'assistant', content: data.response });
+                // Check if we have a valid response
+                if (data && data.response) {
+                    // Add AI response
+                    this.addMessage(data.response, 'assistant');
+                    this.chatHistory.push({ role: 'assistant', content: data.response });
+
+                    // Add activity to dashboard
+                    this.addActivity('chat', 'AI Chat Session', `Discussed: ${message.substring(0, 50)}${message.length > 50 ? '...' : ''}`);
+                } else {
+                    throw new Error('Invalid response format');
+                }
 
             } catch (error) {
                 console.error('Chat API error:', error);
@@ -184,8 +211,68 @@ class Dashboard {
                 const response = this.generateAIResponse(message);
                 this.addMessage(response, 'assistant');
                 this.chatHistory.push({ role: 'assistant', content: response });
+
+                // Add activity to dashboard
+                this.addActivity('chat', 'AI Chat Session', `Discussed: ${message.substring(0, 50)}${message.length > 50 ? '...' : ''}`);
             }
         }
+    }
+
+    // Handle export requests from chat
+    handleExportRequest(message) {
+        const lowerMessage = message.toLowerCase();
+
+        // Check for export requests
+        if (lowerMessage.includes('pdf export') || lowerMessage.includes('generate pdf')) {
+            this.showExportOptions('pdf');
+            return true;
+        }
+        if (lowerMessage.includes('word export') || lowerMessage.includes('generate word')) {
+            this.showExportOptions('word');
+            return true;
+        }
+        if (lowerMessage.includes('excel export') || lowerMessage.includes('generate excel')) {
+            this.showExportOptions('excel');
+            return true;
+        }
+        if (lowerMessage.includes('powerpoint export') || lowerMessage.includes('generate powerpoint')) {
+            this.showExportOptions('powerpoint');
+            return true;
+        }
+
+        return false;
+    }
+
+    // Show export options modal
+    showExportOptions(format) {
+        const businessTypes = [
+            'Mountain Hiking Tours', 'Volcano Trekking', 'Local Restaurant', 'Eco-lodges',
+            'Food Processing', 'Coffee Processing', 'Local Transport', 'Souvenir Shop',
+            'Local Guide Services', 'Organic Farming', 'Guesthouse', 'Internet Cafe'
+        ];
+
+        let modalHtml = `
+            <div id="exportModal" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 10000; display: flex; justify-content: center; align-items: center;">
+                <div style="background: white; padding: 30px; border-radius: 10px; max-width: 500px; width: 90%; max-height: 80%; overflow-y: auto;">
+                    <h3 style="margin: 0 0 20px 0; color: #2c3e50;">Export Business Plan - ${format.toUpperCase()}</h3>
+                    <p style="margin: 0 0 20px 0; color: #7f8c8d;">Select a business type to generate your business plan:</p>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-bottom: 20px;">`;
+
+        businessTypes.forEach(businessType => {
+            modalHtml += `
+                <button onclick="exportBusinessPlan('${businessType}', '${format}'); closeExportModal();" 
+                        style="background: #3498db; color: white; border: none; padding: 12px; border-radius: 6px; cursor: pointer; text-align: left;">
+                    ${businessType}
+                </button>`;
+        });
+
+        modalHtml += `
+                    </div>
+                    <button onclick="closeExportModal()" style="background: #95a5a6; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer;">Cancel</button>
+                </div>
+            </div>`;
+
+        document.body.insertAdjacentHTML('beforeend', modalHtml);
     }
 
     addMessage(content, sender) {
@@ -207,11 +294,97 @@ class Dashboard {
 
     formatMessage(content) {
         // Basic markdown-like formatting
-        return content
+        let formatted = content
             .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
             .replace(/\*(.*?)\*/g, '<em>$1</em>')
             .replace(/`(.*?)`/g, '<code>$1</code>')
             .replace(/\n/g, '<br>');
+
+        // Add export buttons for business plan sections
+        if (content.includes('Export Options:') && content.includes('PDF Export:')) {
+            formatted = this.addExportButtons(formatted, content);
+        }
+
+        // Add quick export buttons for any business response
+        if (content.includes('Business in Musanze') && content.includes('Financial Projections')) {
+            formatted = this.addQuickExportButtons(formatted, content);
+        }
+
+        return formatted;
+    }
+
+    addExportButtons(formatted, content) {
+        // Extract business type from the content
+        let businessType = 'Mountain Hiking Tours'; // default
+
+        // Try to detect business type from content
+        const businessTypes = [
+            'Mountain Hiking Tours', 'Volcano Trekking', 'Local Restaurant', 'Eco-lodges',
+            'Food Processing', 'Coffee Processing', 'Local Transport', 'Souvenir Shop',
+            'Local Guide Services', 'Organic Farming', 'Guesthouse', 'Internet Cafe'
+        ];
+
+        for (const type of businessTypes) {
+            if (content.includes(type + ' Business in Musanze')) {
+                businessType = type;
+                break;
+            }
+        }
+
+        // Replace export text with actual buttons
+        const exportButtonsHtml = `
+            <div style="margin: 15px 0; padding: 15px; background: #f8f9fa; border-radius: 8px; border-left: 4px solid #3498db;">
+                <h4 style="margin: 0 0 10px 0; color: #2c3e50;">💼 Export Business Plan</h4>
+                <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+                    <button onclick="exportBusinessPlan('${businessType}', 'pdf')" style="background: #e74c3c; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; font-size: 14px;">📄 PDF</button>
+                    <button onclick="exportBusinessPlan('${businessType}', 'word')" style="background: #3498db; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; font-size: 14px;">📝 Word</button>
+                    <button onclick="exportBusinessPlan('${businessType}', 'excel')" style="background: #27ae60; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; font-size: 14px;">📊 Excel</button>
+                    <button onclick="exportBusinessPlan('${businessType}', 'powerpoint')" style="background: #f39c12; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; font-size: 14px;">📽️ PowerPoint</button>
+                </div>
+                <p style="margin: 10px 0 0 0; font-size: 12px; color: #7f8c8d;">Click any button to generate and download your business plan</p>
+            </div>`;
+
+        // Replace the export options text with buttons
+        formatted = formatted.replace(
+            /💼 \*\*Export Options:\*\* PDF, Word, Excel, PowerPoint formats available<br>📄 \*\*PDF Export:\*\* Click to generate PDF business plan<br>📝 \*\*Word Export:\*\* Click to generate Word document<br>📊 \*\*Excel Export:\*\* Click to generate Excel spreadsheet<br>📽️ \*\*PowerPoint Export:\*\* Click to generate presentation/g,
+            exportButtonsHtml
+        );
+
+        return formatted;
+    }
+
+    addQuickExportButtons(formatted, content) {
+        // Extract business type from the content
+        let businessType = 'Mountain Hiking Tours'; // default
+
+        // Try to detect business type from content
+        const businessTypes = [
+            'Mountain Hiking Tours', 'Volcano Trekking', 'Local Restaurant', 'Eco-lodges',
+            'Food Processing', 'Coffee Processing', 'Local Transport', 'Souvenir Shop',
+            'Local Guide Services', 'Organic Farming', 'Guesthouse', 'Internet Cafe'
+        ];
+
+        for (const type of businessTypes) {
+            if (content.includes(type + ' Business in Musanze')) {
+                businessType = type;
+                break;
+            }
+        }
+
+        // Add quick export buttons at the end of the message
+        const quickExportButtons = `
+            <div style="margin: 20px 0; padding: 15px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 10px; text-align: center;">
+                <h4 style="margin: 0 0 15px 0; color: white; font-size: 16px;">🚀 Quick Export Business Plan</h4>
+                <div style="display: flex; flex-wrap: wrap; gap: 10px; justify-content: center;">
+                    <button onclick="exportBusinessPlan('${businessType}', 'pdf')" style="background: #e74c3c; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-size: 14px; font-weight: bold; box-shadow: 0 2px 4px rgba(0,0,0,0.2);">📄 PDF</button>
+                    <button onclick="exportBusinessPlan('${businessType}', 'word')" style="background: #3498db; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-size: 14px; font-weight: bold; box-shadow: 0 2px 4px rgba(0,0,0,0.2);">📝 Word</button>
+                    <button onclick="exportBusinessPlan('${businessType}', 'excel')" style="background: #27ae60; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-size: 14px; font-weight: bold; box-shadow: 0 2px 4px rgba(0,0,0,0.2);">📊 Excel</button>
+                    <button onclick="exportBusinessPlan('${businessType}', 'powerpoint')" style="background: #f39c12; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-size: 14px; font-weight: bold; box-shadow: 0 2px 4px rgba(0,0,0,0.2);">📽️ PowerPoint</button>
+                </div>
+                <p style="margin: 10px 0 0 0; font-size: 12px; color: rgba(255,255,255,0.8);">Click any button to generate your ${businessType} business plan</p>
+            </div>`;
+
+        return formatted + quickExportButtons;
     }
 
     showTypingIndicator() {
@@ -353,6 +526,9 @@ class Dashboard {
                 await this.generateBusinessPlan();
             });
         }
+
+        // Add export functionality to global scope
+        window.exportBusinessPlan = this.exportBusinessPlan.bind(this);
     }
 
     async generateBusinessPlan() {
@@ -395,6 +571,9 @@ class Dashboard {
                     newWindow.focus();
 
                     this.showNotification('✅ Business plan opened in new window! Click "Print to PDF" button to create PDF.', 'success');
+
+                    // Add activity to dashboard
+                    this.addActivity('business_plan', 'Business Plan Created', `${formData.businessName} business plan generated successfully`);
                 } else {
                     throw new Error('Popup blocked. Please allow popups for this site.');
                 }
@@ -635,6 +814,210 @@ class Dashboard {
         // This would integrate with a real search API
         console.log('Global search for:', query);
     }
+
+    // Dashboard Data Management
+    async loadDashboardData() {
+        try {
+            // Load stats
+            await this.loadStats();
+
+            // Load recent activities
+            await this.loadRecentActivities();
+
+        } catch (error) {
+            console.error('Failed to load dashboard data:', error);
+        }
+    }
+
+    async loadStats() {
+        try {
+            const response = await fetch('api/dashboard-data.php?action=stats');
+            const result = await response.json();
+
+            if (result.success) {
+                this.updateStatsDisplay(result.data);
+            }
+        } catch (error) {
+            console.error('Failed to load stats:', error);
+        }
+    }
+
+    updateStatsDisplay(stats) {
+        // Update Active Projects
+        const activeProjectsElement = document.querySelector('.stat-card:nth-child(1) h3');
+        if (activeProjectsElement) {
+            activeProjectsElement.textContent = stats.active_projects || 0;
+        }
+
+        // Update Revenue Generated
+        const revenueElement = document.querySelector('.stat-card:nth-child(2) h3');
+        if (revenueElement) {
+            const revenue = stats.revenue_generated || 0;
+            revenueElement.textContent = this.formatCurrency(revenue);
+        }
+
+        // Update Total Users
+        const usersElement = document.querySelector('.stat-card:nth-child(3) h3');
+        if (usersElement) {
+            usersElement.textContent = this.formatNumber(stats.total_users || 0);
+        }
+
+        // Update Success Rate
+        const successElement = document.querySelector('.stat-card:nth-child(4) h3');
+        if (successElement) {
+            successElement.textContent = (stats.success_rate || 0) + '%';
+        }
+    }
+
+    async loadRecentActivities() {
+        try {
+            const response = await fetch('api/dashboard-data.php?action=activities&limit=5');
+            const result = await response.json();
+
+            if (result.success) {
+                this.updateActivitiesDisplay(result.data);
+            }
+        } catch (error) {
+            console.error('Failed to load activities:', error);
+        }
+    }
+
+    updateActivitiesDisplay(activities) {
+        const activitiesContainer = document.querySelector('.activity-list');
+        if (!activitiesContainer) return;
+
+        activitiesContainer.innerHTML = '';
+
+        activities.forEach(activity => {
+            const activityElement = this.createActivityElement(activity);
+            activitiesContainer.appendChild(activityElement);
+        });
+    }
+
+    createActivityElement(activity) {
+        const div = document.createElement('div');
+        div.className = 'activity-item';
+
+        const timeAgo = this.getTimeAgo(activity.timestamp);
+
+        div.innerHTML = `
+            <div class="activity-icon bg-${activity.color}">
+                <i class="${activity.icon}"></i>
+            </div>
+            <div class="activity-content">
+                <h6>${activity.title}</h6>
+                <p>${activity.description}</p>
+                <small class="text-muted">${timeAgo}</small>
+            </div>
+        `;
+
+        return div;
+    }
+
+    formatCurrency(amount) {
+        if (amount >= 1000000) {
+            return (amount / 1000000).toFixed(1) + 'M RWF';
+        } else if (amount >= 1000) {
+            return (amount / 1000).toFixed(0) + 'K RWF';
+        } else {
+            return amount.toFixed(0) + ' RWF';
+        }
+    }
+
+    formatNumber(num) {
+        return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    }
+
+    getTimeAgo(timestamp) {
+        const now = Math.floor(Date.now() / 1000);
+        const diff = now - timestamp;
+
+        if (diff < 60) return 'Just now';
+        if (diff < 3600) return Math.floor(diff / 60) + ' minutes ago';
+        if (diff < 86400) return Math.floor(diff / 3600) + ' hours ago';
+        if (diff < 2592000) return Math.floor(diff / 86400) + ' days ago';
+        return Math.floor(diff / 2592000) + ' months ago';
+    }
+
+    // Method to add new activity (can be called from other parts of the app)
+    async addActivity(type, title, description) {
+        try {
+            const response = await fetch('api/dashboard-data.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    action: 'add_activity',
+                    type: type,
+                    title: title,
+                    description: description
+                })
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+                // Reload activities to show the new one
+                await this.loadRecentActivities();
+            }
+
+            return result;
+        } catch (error) {
+            console.error('Failed to add activity:', error);
+            return { success: false, error: error.message };
+        }
+    }
+
+    // Export business plan functionality
+    async exportBusinessPlan(businessType, format) {
+        try {
+            this.showNotification('Generating business plan...', 'info');
+
+            const response = await fetch('api/export-business-plan.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    business_type: businessType,
+                    format: format,
+                    business_data: {}
+                })
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+                if (format === 'pdf' || format === 'word' || format === 'powerpoint') {
+                    // Open HTML in new window for printing/saving
+                    const newWindow = window.open('', '_blank');
+                    newWindow.document.write(result.html);
+                    newWindow.document.close();
+
+                    this.showNotification('Business plan opened in new window! Use browser print function to save as ' + format.toUpperCase(), 'success');
+                } else if (format === 'excel') {
+                    // Download CSV file
+                    const blob = new Blob([result.csv], { type: 'text/csv' });
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = result.filename;
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    window.URL.revokeObjectURL(url);
+
+                    this.showNotification('Excel file downloaded successfully!', 'success');
+                }
+            } else {
+                this.showNotification('Error generating business plan: ' + result.error, 'error');
+            }
+        } catch (error) {
+            console.error('Export error:', error);
+            this.showNotification('Error generating business plan. Please try again.', 'error');
+        }
+    }
 }
 
 // Initialize Dashboard when DOM is loaded
@@ -652,6 +1035,21 @@ function showSection(sectionId) {
 function sendMessage() {
     if (window.dashboard) {
         window.dashboard.sendMessage();
+    }
+}
+
+// Global export function
+async function exportBusinessPlan(businessType, format) {
+    if (window.dashboard) {
+        await window.dashboard.exportBusinessPlan(businessType, format);
+    }
+}
+
+// Close export modal
+function closeExportModal() {
+    const modal = document.getElementById('exportModal');
+    if (modal) {
+        modal.remove();
     }
 }
 

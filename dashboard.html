@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,6 +12,7 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="assets/css/dashboard.css?v=20241220" rel="stylesheet">
 </head>
+
 <body>
     <!-- Sidebar -->
     <div class="sidebar" id="sidebar">
@@ -78,11 +80,11 @@
                         </button>
                         <ul class="dropdown-menu">
                             <li><a class="dropdown-item" href="#" onclick="showSection('settings')">
-                                <i class="fas fa-cog me-2"></i>Settings
-                            </a></li>
+                                    <i class="fas fa-cog me-2"></i>Settings
+                                </a></li>
                             <li><a class="dropdown-item" href="#" onclick="logout()">
-                                <i class="fas fa-sign-out-alt me-2"></i>Logout
-                            </a></li>
+                                    <i class="fas fa-sign-out-alt me-2"></i>Logout
+                                </a></li>
                         </ul>
                     </div>
                 </div>
@@ -166,38 +168,8 @@
                         <h5><i class="fas fa-clock me-2"></i>Recent Activity</h5>
                     </div>
                     <div class="card-body">
-                        <div class="activity-item">
-                            <div class="d-flex align-items-center mb-3">
-                                <div class="activity-icon me-3">
-                                    <i class="fas fa-file-alt text-primary"></i>
-                                </div>
-                                <div>
-                                    <h6 class="mb-1">Business Plan Created</h6>
-                                    <small class="text-muted">2 hours ago</small>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="activity-item">
-                            <div class="d-flex align-items-center mb-3">
-                                <div class="activity-icon me-3">
-                                    <i class="fas fa-comments text-success"></i>
-                                </div>
-                                <div>
-                                    <h6 class="mb-1">AI Chat Session</h6>
-                                    <small class="text-muted">4 hours ago</small>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="activity-item">
-                            <div class="d-flex align-items-center mb-3">
-                                <div class="activity-icon me-3">
-                                    <i class="fas fa-search text-info"></i>
-                                </div>
-                                <div>
-                                    <h6 class="mb-1">Market Research</h6>
-                                    <small class="text-muted">1 day ago</small>
-                                </div>
-                            </div>
+                        <div class="activity-list">
+                            <!-- Activities will be loaded dynamically -->
                         </div>
                     </div>
                 </div>
@@ -215,13 +187,18 @@
                                 <div class="message assistant">
                                     <div class="message-avatar">AI</div>
                                     <div class="message-content">
-                                        Hello! I'm your AI startup assistant. How can I help you today? I can assist with business planning, market research, funding strategies, and much more!
+                                        Hello! I'm your AI business assistant for Musanze, Rwanda.
+
+                                        I can help you explore business opportunities, startup costs, and planning. What
+                                        would you like to know about?
                                     </div>
                                 </div>
                             </div>
                             <div class="chat-input">
                                 <div class="input-group">
-                                    <input type="text" id="chat-input" placeholder="Ask me anything about your startup..." onkeypress="handleChatKeyPress(event)">
+                                    <input type="text" id="chat-input"
+                                        placeholder="e.g., 'I want to start a tourism business' or 'coffee farming costs'..."
+                                        onkeypress="handleChatKeyPress(event)">
                                     <button class="send-btn" onclick="sendMessage()">
                                         <i class="fas fa-paper-plane"></i>
                                     </button>
@@ -241,7 +218,8 @@
                     <div class="card-body">
                         <div class="row mb-4">
                             <div class="col-md-8">
-                                <input type="text" class="form-control" id="search-input" placeholder="Search for business resources, templates, guides...">
+                                <input type="text" class="form-control" id="search-input"
+                                    placeholder="Search for business resources, templates, guides...">
                             </div>
                             <div class="col-md-4">
                                 <select class="form-select" id="search-filter">
@@ -313,11 +291,14 @@
                                 <div class="col-md-6">
                                     <div class="mb-3">
                                         <label for="missionStatement" class="form-label">Mission Statement</label>
-                                        <textarea class="form-control" id="missionStatement" rows="3" required></textarea>
+                                        <textarea class="form-control" id="missionStatement" rows="3"
+                                            required></textarea>
                                     </div>
                                     <div class="mb-3">
-                                        <label for="competitiveAdvantage" class="form-label">Competitive Advantage</label>
-                                        <textarea class="form-control" id="competitiveAdvantage" rows="3" required></textarea>
+                                        <label for="competitiveAdvantage" class="form-label">Competitive
+                                            Advantage</label>
+                                        <textarea class="form-control" id="competitiveAdvantage" rows="3"
+                                            required></textarea>
                                     </div>
                                     <div class="mb-3">
                                         <label for="fundingNeeds" class="form-label">Funding Requirements</label>
@@ -403,4 +384,5 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="assets/js/dashboard.js"></script>
 </body>
+
 </html>

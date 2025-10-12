@@ -73,7 +73,7 @@ class InnoStartRunner:
             logger.error(f"Missing requirements: {missing}")
             return False
         
-        logger.info("✓ All requirements met")
+        logger.info("[OK] All requirements met")
         return True
     
     def _check_command(self, command, optional=False):
@@ -96,7 +96,7 @@ class InnoStartRunner:
             if os.path.exists('requirements.txt'):
                 subprocess.run([sys.executable, '-m', 'pip', 'install', '-r', 'requirements.txt'], 
                              check=True, cwd=self.project_root)
-                logger.info("✓ Dependencies installed from requirements.txt")
+                logger.info("[OK] Dependencies installed from requirements.txt")
             
             # Install additional ML dependencies
             ml_packages = [
@@ -111,7 +111,7 @@ class InnoStartRunner:
                 except subprocess.CalledProcessError:
                     logger.warning(f"Could not install {package}")
             
-            logger.info("✓ ML dependencies installed")
+            logger.info("[OK] ML dependencies installed")
             return True
             
         except subprocess.CalledProcessError as e:
@@ -130,7 +130,7 @@ class InnoStartRunner:
         for directory in directories:
             os.makedirs(directory, exist_ok=True)
         
-        logger.info("✓ Directories created")
+        logger.info("[OK] Directories created")
     
     def train_ml_model(self):
         """Train the machine learning model"""
@@ -143,7 +143,7 @@ class InnoStartRunner:
             ], capture_output=True, text=True, cwd=self.project_root)
             
             if result.returncode == 0:
-                logger.info("✓ ML model trained successfully")
+                logger.info("[OK] ML model trained successfully")
                 return True
             else:
                 logger.error(f"Training failed: {result.stderr}")
@@ -163,7 +163,7 @@ class InnoStartRunner:
             ], capture_output=True, text=True, cwd=self.project_root)
             
             if result.returncode == 0:
-                logger.info("✓ ML integration tests passed")
+                logger.info("[OK] ML integration tests passed")
                 return True
             else:
                 logger.error(f"Tests failed: {result.stderr}")
@@ -189,7 +189,7 @@ class InnoStartRunner:
             
             # Check if server is running
             if self.server_process.poll() is None:
-                logger.info(f"✓ Web server started on http://localhost:{port}")
+                logger.info(f"[OK] Web server started on http://localhost:{port}")
                 return True
             else:
                 logger.error("Failed to start web server")
@@ -205,7 +205,7 @@ class InnoStartRunner:
             logger.info("Stopping web server...")
             self.server_process.terminate()
             self.server_process.wait()
-            logger.info("✓ Web server stopped")
+            logger.info("[OK] Web server stopped")
     
     def check_installation(self):
         """Check installation status"""
@@ -219,7 +219,7 @@ class InnoStartRunner:
                 ], capture_output=True, text=True, cwd=self.project_root)
                 
                 if result.returncode == 0:
-                    logger.info("✓ Installation check passed")
+                    logger.info("[OK] Installation check passed")
                     return True
                 else:
                     logger.warning(f"Installation check issues: {result.stderr}")
@@ -234,15 +234,27 @@ class InnoStartRunner:
     
     def open_browser(self, url=None):
         """Open browser to the application"""
-        url = url or f"http://localhost:{self.config['server_port']}/index.html"
+        urls_to_open = []
+        
+        if url:
+            urls_to_open.append(url)
+        else:
+            # Open both Python server and XAMPP URLs
+            urls_to_open.extend([
+                f"http://localhost:{self.config['server_port']}/index.html",
+                "http://localhost/innostart/"
+            ])
         
         try:
             import webbrowser
-            webbrowser.open(url)
-            logger.info(f"✓ Browser opened to {url}")
+            for url in urls_to_open:
+                webbrowser.open(url)
+                logger.info(f"[OK] Browser opened to {url}")
         except Exception as e:
             logger.warning(f"Could not open browser: {e}")
-            print(f"Please open your browser to: {url}")
+            print("Please open your browser to:")
+            for url in urls_to_open:
+                print(f"  - {url}")
     
     def run_complete_setup(self):
         """Run complete project setup"""
@@ -264,7 +276,7 @@ class InnoStartRunner:
                 logger.error(f"Setup failed at: {step_name}")
                 return False
         
-        logger.info("✓ Complete setup finished successfully!")
+        logger.info("[OK] Complete setup finished successfully!")
         return True
     
     def run_development_mode(self):
@@ -280,10 +292,17 @@ class InnoStartRunner:
             print("\n" + "="*60)
             print("InnoStart Development Server Running!")
             print("="*60)
-            print(f"Main Application: http://localhost:{self.config['server_port']}/index.html")
-            print(f"Dashboard: http://localhost:{self.config['server_port']}/dashboard.html")
-            print(f"Installation Check: http://localhost:{self.config['server_port']}/install.php")
-            print(f"AI Chat: Available in the main application")
+            print("Python Server (Port 8000):")
+            print(f"  Main Application: http://localhost:{self.config['server_port']}/index.html")
+            print(f"  Dashboard: http://localhost:{self.config['server_port']}/dashboard.html")
+            print(f"  Installation Check: http://localhost:{self.config['server_port']}/install.php")
+            print()
+            print("XAMPP Server (Port 80):")
+            print("  Main Application: http://localhost/innostart/")
+            print("  Dashboard: http://localhost/innostart/dashboard.html")
+            print("  Login: http://localhost/innostart/login.html")
+            print()
+            print("AI Chat: Available in both applications")
             print("="*60)
             print("Press Ctrl+C to stop the server")
             print("="*60)
@@ -315,7 +334,12 @@ class InnoStartRunner:
             print("\n" + "="*60)
             print("InnoStart Production Server Running!")
             print("="*60)
-            print(f"Application: http://localhost:{self.config['server_port']}")
+            print("Python Server (Port 8000):")
+            print(f"  Application: http://localhost:{self.config['server_port']}")
+            print()
+            print("XAMPP Server (Port 80):")
+            print("  Application: http://localhost/innostart/")
+            print()
             print("AI Features: Fully integrated and trained")
             print("Analytics: Available in dashboard")
             print("="*60)
@@ -347,7 +371,7 @@ class InnoStartRunner:
                 logger.error(f"Training failed at: {step_name}")
                 return False
         
-        logger.info("✓ ML training completed successfully!")
+        logger.info("[OK] ML training completed successfully!")
         return True
     
     def run_server_only(self):
@@ -363,7 +387,11 @@ class InnoStartRunner:
             print("\n" + "="*60)
             print("InnoStart Web Server Running!")
             print("="*60)
-            print(f"Application: http://localhost:{self.config['server_port']}")
+            print("Python Server (Port 8000):")
+            print(f"  Application: http://localhost:{self.config['server_port']}")
+            print()
+            print("XAMPP Server (Port 80):")
+            print("  Application: http://localhost/innostart/")
             print("="*60)
             print("Press Ctrl+C to stop the server")
             print("="*60)
@@ -419,7 +447,7 @@ class InnoStartRunner:
             # Implementation would go here
             pass
         
-        logger.info("✓ Cleanup completed")
+        logger.info("[OK] Cleanup completed")
 
 def main():
     """Main function"""
