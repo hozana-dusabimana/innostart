@@ -205,8 +205,9 @@
         </div>
 
         <div class="login-footer">
-            <p>Don't have an account? <a href="#" onclick="showRegister()">Sign up here</a></p>
+            <p>Don't have an account? <a href="signup.html">Sign up here</a></p>
             <p><a href="#" onclick="forgotPassword()">Forgot your password?</a></p>
+            <p><a href="index.html">← Back to Home</a></p>
         </div>
     </div>
 
@@ -287,12 +288,8 @@
             `;
         }
 
-        function showRegister() {
-            showAlert('Registration feature coming soon!', 'info');
-        }
-
         function forgotPassword() {
-            showAlert('Password reset feature coming soon!', 'info');
+            showAlert('Password reset feature coming soon! Please contact support for assistance.', 'info');
         }
 
         // Check if user is already logged in

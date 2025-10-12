@@ -60,10 +60,7 @@
                         dashboard.
                     </p>
                     <div class="d-flex gap-3 flex-wrap">
-                        <a href="login.html" 
-                           class="btn btn-primary btn-lg clickable-button"
-                           id="getStartedBtn"
-                           style="
+                        <a href="signup.html" class="btn btn-primary btn-lg clickable-button" id="getStartedBtn" style="
                                display: inline-block !important;
                                cursor: pointer !important;
                                pointer-events: auto !important;
@@ -81,15 +78,13 @@
                                min-height: 50px !important;
                                line-height: 1.2 !important;
                            "
-                           onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 8px 25px rgba(0,0,0,0.3)'"
-                           onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'"
-                           onclick="console.log('Get Started clicked!'); window.location.href='login.html'; return false;">
+                            onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 8px 25px rgba(0,0,0,0.3)'"
+                            onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'"
+                            onclick="console.log('Get Started clicked!'); window.location.href='signup.html'; return false;">
                             <i class="fas fa-rocket me-2"></i>Get Started Free
                         </a>
-                        <button class="btn btn-outline-light btn-lg clickable-button"
-                                id="seeHowItWorksBtn"
-                                type="button"
-                                style="
+                        <button class="btn btn-outline-light btn-lg clickable-button" id="seeHowItWorksBtn"
+                            type="button" style="
                                     display: inline-block !important;
                                     cursor: pointer !important;
                                     pointer-events: auto !important;
@@ -106,9 +101,9 @@
                                     min-height: 50px !important;
                                     line-height: 1.2 !important;
                                 "
-                                onmouseover="this.style.background='rgba(255,255,255,0.2)'; this.style.borderColor='white'; this.style.transform='translateY(-2px)'; this.style.boxShadow='0 8px 25px rgba(0,0,0,0.3)'"
-                                onmouseout="this.style.background='rgba(255,255,255,0.1)'; this.style.borderColor='rgba(255,255,255,0.5)'; this.style.transform='translateY(0)'; this.style.boxShadow='none'"
-                                onclick="console.log('See How It Works clicked!'); scrollToSection('features'); return false;">
+                            onmouseover="this.style.background='rgba(255,255,255,0.2)'; this.style.borderColor='white'; this.style.transform='translateY(-2px)'; this.style.boxShadow='0 8px 25px rgba(0,0,0,0.3)'"
+                            onmouseout="this.style.background='rgba(255,255,255,0.1)'; this.style.borderColor='rgba(255,255,255,0.5)'; this.style.transform='translateY(0)'; this.style.boxShadow='none'"
+                            onclick="console.log('See How It Works clicked!'); scrollToSection('features'); return false;">
                             <i class="fas fa-play me-2"></i>See How It Works
                         </button>
                     </div>
@@ -494,32 +489,32 @@
                 console.error('Section not found:', sectionId);
             }
         }
-        
+
         // Force button functionality
         function forceButtonClickability() {
             console.log('Forcing button clickability...');
-            
+
             // Get Started button
             const getStartedBtn = document.getElementById('getStartedBtn');
             if (getStartedBtn) {
                 getStartedBtn.style.cursor = 'pointer';
                 getStartedBtn.style.pointerEvents = 'auto';
                 getStartedBtn.style.zIndex = '100';
-                getStartedBtn.addEventListener('click', function(e) {
+                getStartedBtn.addEventListener('click', function (e) {
                     e.preventDefault();
                     console.log('Get Started button clicked via force handler!');
-                    window.location.href = 'login.html';
+                    window.location.href = 'signup.html';
                 });
                 console.log('Get Started button forced to be clickable');
             }
-            
+
             // See How It Works button
             const seeHowBtn = document.getElementById('seeHowItWorksBtn');
             if (seeHowBtn) {
                 seeHowBtn.style.cursor = 'pointer';
                 seeHowBtn.style.pointerEvents = 'auto';
                 seeHowBtn.style.zIndex = '100';
-                seeHowBtn.addEventListener('click', function(e) {
+                seeHowBtn.addEventListener('click', function (e) {
                     e.preventDefault();
                     console.log('See How It Works button clicked via force handler!');
                     scrollToSection('features');
@@ -527,7 +522,7 @@
                 console.log('See How It Works button forced to be clickable');
             }
         }
-        
+
         // Run immediately and on load
         forceButtonClickability();
         window.addEventListener('load', forceButtonClickability);
