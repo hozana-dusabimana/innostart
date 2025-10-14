@@ -4,6 +4,158 @@
 let chatHistory = [];
 let currentProjections = null;
 
+// Export Business Plan Function
+async function exportBusinessPlan(businessType, format) {
+    try {
+        // Show loading state
+        const button = event.target;
+        const originalText = button.innerHTML;
+        button.classList.add('loading');
+        button.disabled = true;
+
+        // Call the export API
+        const response = await fetch('api/export-business-plan.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                business_type: businessType,
+                format: format,
+                business_data: {
+                    // Include any additional data from the current chat context
+                    timestamp: new Date().toISOString(),
+                    source: 'chat_interface'
+                }
+            })
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+            // Handle different export formats
+            if (format === 'pdf' || format === 'word') {
+                // Open HTML content in new window for PDF/Word
+                const newWindow = window.open('', '_blank');
+                newWindow.document.write(result.html);
+                newWindow.document.close();
+
+                // Show success message
+                showNotification(`✅ ${format.toUpperCase()} business plan generated successfully!`, 'success');
+            } else if (format === 'excel') {
+                // Download CSV file for Excel
+                downloadCSV(result.csv, result.filename);
+                showNotification(`✅ Excel business plan data downloaded successfully!`, 'success');
+            }
+        } else {
+            throw new Error(result.error || 'Export failed');
+        }
+
+    } catch (error) {
+        console.error('Export error:', error);
+        showNotification(`❌ Export failed: ${error.message}`, 'error');
+    } finally {
+        // Reset button state
+        button.classList.remove('loading');
+        button.innerHTML = originalText;
+        button.disabled = false;
+    }
+}
+
+// Download CSV function
+function downloadCSV(csvContent, filename) {
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+
+    if (link.download !== undefined) {
+        const url = URL.createObjectURL(blob);
+        link.setAttribute('href', url);
+        link.setAttribute('download', filename);
+        link.style.visibility = 'hidden';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }
+}
+
+// Show notification function
+function showNotification(message, type = 'info') {
+    // Create notification element
+    const notification = document.createElement('div');
+    notification.className = `notification notification-${type}`;
+    notification.innerHTML = `
+        <div class="notification-content">
+            <span class="notification-message">${message}</span>
+            <button class="notification-close" onclick="this.parentElement.parentElement.remove()">×</button>
+        </div>
+    `;
+
+    // Add styles if not already added
+    if (!document.getElementById('notification-styles')) {
+        const styles = document.createElement('style');
+        styles.id = 'notification-styles';
+        styles.textContent = `
+            .notification {
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                z-index: 10000;
+                padding: 15px 20px;
+                border-radius: 8px;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+                max-width: 400px;
+                animation: slideIn 0.3s ease-out;
+            }
+            .notification-success {
+                background: #d4edda;
+                color: #155724;
+                border: 1px solid #c3e6cb;
+            }
+            .notification-error {
+                background: #f8d7da;
+                color: #721c24;
+                border: 1px solid #f5c6cb;
+            }
+            .notification-info {
+                background: #d1ecf1;
+                color: #0c5460;
+                border: 1px solid #bee5eb;
+            }
+            .notification-content {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+            .notification-close {
+                background: none;
+                border: none;
+                font-size: 18px;
+                cursor: pointer;
+                margin-left: 10px;
+                opacity: 0.7;
+            }
+            .notification-close:hover {
+                opacity: 1;
+            }
+            @keyframes slideIn {
+                from { transform: translateX(100%); opacity: 0; }
+                to { transform: translateX(0); opacity: 1; }
+            }
+        `;
+        document.head.appendChild(styles);
+    }
+
+    // Add to page
+    document.body.appendChild(notification);
+
+    // Auto remove after 5 seconds
+    setTimeout(() => {
+        if (notification.parentElement) {
+            notification.remove();
+        }
+    }, 5000);
+}
+
 // Scroll to specific section - Define early to avoid reference errors
 function scrollToSection(sectionId) {
     console.log('scrollToSection called with:', sectionId);

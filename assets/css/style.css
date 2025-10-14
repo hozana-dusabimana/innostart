@@ -11,6 +11,178 @@
     --dark-color: #212529;
 }
 
+/* Export Button Styles - Modern Professional Design */
+.export-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px 20px;
+    margin: 6px;
+    border: none;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    text-decoration: none;
+    color: white;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    position: relative;
+    overflow: hidden;
+    min-width: 140px;
+    text-align: center;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.export-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s;
+}
+
+.export-btn:hover::before {
+    left: 100%;
+}
+
+.export-btn:hover {
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+}
+
+.export-btn:active {
+    transform: translateY(-1px) scale(1.01);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+}
+
+.export-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.export-btn:disabled::before {
+    display: none;
+}
+
+/* PDF Export Button - Red Theme */
+.pdf-btn {
+    background: linear-gradient(135deg, #ff4757, #ff3742, #ff2f3a);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.pdf-btn:hover:not(:disabled) {
+    background: linear-gradient(135deg, #ff3742, #ff2f3a, #ff2833);
+    box-shadow: 0 8px 25px rgba(255, 71, 87, 0.4);
+}
+
+.pdf-btn::after {
+    content: '📄';
+    margin-left: 8px;
+    font-size: 16px;
+}
+
+/* Word Export Button - Blue Theme */
+.word-btn {
+    background: linear-gradient(135deg, #3742fa, #2f3542, #2c2e3e);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.word-btn:hover:not(:disabled) {
+    background: linear-gradient(135deg, #2f3542, #2c2e3e, #2a2c3a);
+    box-shadow: 0 8px 25px rgba(55, 66, 250, 0.4);
+}
+
+.word-btn::after {
+    content: '📝';
+    margin-left: 8px;
+    font-size: 16px;
+}
+
+/* Excel Export Button - Green Theme */
+.excel-btn {
+    background: linear-gradient(135deg, #2ed573, #1e90ff, #3742fa);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.excel-btn:hover:not(:disabled) {
+    background: linear-gradient(135deg, #1e90ff, #3742fa, #2f3542);
+    box-shadow: 0 8px 25px rgba(46, 213, 115, 0.4);
+}
+
+.excel-btn::after {
+    content: '📊';
+    margin-left: 8px;
+    font-size: 16px;
+}
+
+/* Export Button Container */
+.export-buttons-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    margin: 20px 0;
+    padding: 20px;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+    border-radius: 16px;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .export-btn {
+        min-width: 120px;
+        padding: 10px 16px;
+        font-size: 13px;
+        margin: 4px;
+    }
+
+    .export-buttons-container {
+        flex-direction: column;
+        gap: 8px;
+    }
+}
+
+/* Loading State */
+.export-btn.loading {
+    position: relative;
+    color: transparent;
+}
+
+.export-btn.loading::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 20px;
+    height: 20px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-top: 2px solid white;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% {
+        transform: translate(-50%, -50%) rotate(0deg);
+    }
+
+    100% {
+        transform: translate(-50%, -50%) rotate(360deg);
+    }
+}
+
 /* Global Styles */
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
