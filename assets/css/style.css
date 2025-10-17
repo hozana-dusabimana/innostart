@@ -16,24 +16,26 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    padding: 12px 20px;
-    margin: 6px;
+    padding: 14px 24px;
+    margin: 8px;
     border: none;
-    border-radius: 12px;
+    border-radius: 16px;
     font-size: 14px;
-    font-weight: 600;
+    font-weight: 700;
     cursor: pointer;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     text-decoration: none;
     color: white;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
     position: relative;
     overflow: hidden;
-    min-width: 140px;
+    min-width: 160px;
     text-align: center;
-    letter-spacing: 0.5px;
+    letter-spacing: 0.8px;
     text-transform: uppercase;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    backdrop-filter: blur(10px);
+    border: 2px solid rgba(255, 255, 255, 0.1);
 }
 
 .export-btn::before {
@@ -52,8 +54,9 @@
 }
 
 .export-btn:hover {
-    transform: translateY(-2px) scale(1.02);
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+    transform: translateY(-4px) scale(1.05);
+    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.25);
+    border-color: rgba(255, 255, 255, 0.3);
 }
 
 .export-btn:active {
@@ -74,53 +77,59 @@
 
 /* PDF Export Button - Red Theme */
 .pdf-btn {
-    background: linear-gradient(135deg, #ff4757, #ff3742, #ff2f3a);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: linear-gradient(135deg, #ff4757 0%, #ff3742 50%, #ff2f3a 100%);
+    border: 2px solid rgba(255, 71, 87, 0.3);
 }
 
 .pdf-btn:hover:not(:disabled) {
-    background: linear-gradient(135deg, #ff3742, #ff2f3a, #ff2833);
-    box-shadow: 0 8px 25px rgba(255, 71, 87, 0.4);
+    background: linear-gradient(135deg, #ff3742 0%, #ff2f3a 50%, #ff2833 100%);
+    box-shadow: 0 12px 35px rgba(255, 71, 87, 0.5);
+    border-color: rgba(255, 71, 87, 0.6);
 }
 
 .pdf-btn::after {
     content: '📄';
-    margin-left: 8px;
-    font-size: 16px;
+    margin-left: 10px;
+    font-size: 18px;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
 }
 
 /* Word Export Button - Blue Theme */
 .word-btn {
-    background: linear-gradient(135deg, #3742fa, #2f3542, #2c2e3e);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: linear-gradient(135deg, #3742fa 0%, #2f3542 50%, #2c2e3e 100%);
+    border: 2px solid rgba(55, 66, 250, 0.3);
 }
 
 .word-btn:hover:not(:disabled) {
-    background: linear-gradient(135deg, #2f3542, #2c2e3e, #2a2c3a);
-    box-shadow: 0 8px 25px rgba(55, 66, 250, 0.4);
+    background: linear-gradient(135deg, #2f3542 0%, #2c2e3e 50%, #2a2c3a 100%);
+    box-shadow: 0 12px 35px rgba(55, 66, 250, 0.5);
+    border-color: rgba(55, 66, 250, 0.6);
 }
 
 .word-btn::after {
     content: '📝';
-    margin-left: 8px;
-    font-size: 16px;
+    margin-left: 10px;
+    font-size: 18px;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
 }
 
 /* Excel Export Button - Green Theme */
 .excel-btn {
-    background: linear-gradient(135deg, #2ed573, #1e90ff, #3742fa);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: linear-gradient(135deg, #2ed573 0%, #1e90ff 50%, #3742fa 100%);
+    border: 2px solid rgba(46, 213, 115, 0.3);
 }
 
 .excel-btn:hover:not(:disabled) {
-    background: linear-gradient(135deg, #1e90ff, #3742fa, #2f3542);
-    box-shadow: 0 8px 25px rgba(46, 213, 115, 0.4);
+    background: linear-gradient(135deg, #1e90ff 0%, #3742fa 50%, #2f3542 100%);
+    box-shadow: 0 12px 35px rgba(46, 213, 115, 0.5);
+    border-color: rgba(46, 213, 115, 0.6);
 }
 
 .excel-btn::after {
     content: '📊';
-    margin-left: 8px;
-    font-size: 16px;
+    margin-left: 10px;
+    font-size: 18px;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
 }
 
 /* Export Button Container */
@@ -129,13 +138,60 @@
     flex-wrap: wrap;
     justify-content: center;
     align-items: center;
-    gap: 10px;
-    margin: 20px 0;
-    padding: 20px;
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
-    border-radius: 16px;
+    gap: 15px;
+    margin: 25px 0;
+    padding: 25px;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
+    border-radius: 20px;
     backdrop-filter: blur(10px);
     border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+}
+
+/* Loading State for Export Buttons */
+.export-btn.loading {
+    pointer-events: none;
+    opacity: 0.8;
+}
+
+.export-btn.loading::after {
+    content: '';
+    width: 16px;
+    height: 16px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-top: 2px solid white;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-left: 10px;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+/* Pulse Animation for Export Buttons */
+.export-btn.pulse {
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% {
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+    }
+
+    50% {
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15), 0 0 0 10px rgba(255, 255, 255, 0.1);
+    }
+
+    100% {
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+    }
 }
 
 /* Responsive Design */

@@ -1203,21 +1203,45 @@ try {
     
     // Check if this is a specific business selection (should show detailed analysis) - CHECK THIS FIRST
     $isSpecificBusinessSelection = (
+        // All business types from dataset
         strpos($message_lower, 'mountain hiking tours') !== false ||
         strpos($message_lower, 'coffee processing') !== false ||
         strpos($message_lower, 'local restaurant') !== false ||
         strpos($message_lower, 'organic farming') !== false ||
-        strpos($message_lower, 'small grocery store') !== false ||
         strpos($message_lower, 'internet cafe') !== false ||
+        strpos($message_lower, 'eco-lodges') !== false ||
         strpos($message_lower, 'eco-lodge') !== false ||
         strpos($message_lower, 'souvenir shop') !== false ||
         strpos($message_lower, 'local transport') !== false ||
-        strpos($message_lower, 'traditional crafts') !== false ||
         strpos($message_lower, 'local guide services') !== false ||
         strpos($message_lower, 'volcano trekking') !== false ||
         strpos($message_lower, 'food processing') !== false ||
+        strpos($message_lower, 'guesthouse') !== false ||
+        strpos($message_lower, 'guest house') !== false ||
+        // Additional common variations and related terms
+        strpos($message_lower, 'bed & breakfast') !== false ||
+        strpos($message_lower, 'bed and breakfast') !== false ||
+        strpos($message_lower, 'hotel') !== false ||
+        strpos($message_lower, 'lodge') !== false ||
+        strpos($message_lower, 'accommodation') !== false ||
+        strpos($message_lower, 'traditional crafts') !== false ||
         strpos($message_lower, 'gift shop') !== false ||
-        strpos($message_lower, 'cultural tours') !== false
+        strpos($message_lower, 'cultural tours') !== false ||
+        strpos($message_lower, 'small grocery store') !== false ||
+        strpos($message_lower, 'restaurant') !== false ||
+        strpos($message_lower, 'cafe') !== false ||
+        strpos($message_lower, 'coffee') !== false ||
+        strpos($message_lower, 'farming') !== false ||
+        strpos($message_lower, 'agriculture') !== false ||
+        strpos($message_lower, 'transport') !== false ||
+        strpos($message_lower, 'guide') !== false ||
+        strpos($message_lower, 'hiking') !== false ||
+        strpos($message_lower, 'tours') !== false ||
+        strpos($message_lower, 'trekking') !== false ||
+        strpos($message_lower, 'processing') !== false ||
+        strpos($message_lower, 'shop') !== false ||
+        strpos($message_lower, 'souvenir') !== false ||
+        strpos($message_lower, 'internet') !== false
     );
     
     // Check if this is a sector selection (should show business opportunities list) - CHECK THIS SECOND

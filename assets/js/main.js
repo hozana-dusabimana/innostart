@@ -13,6 +13,9 @@ async function exportBusinessPlan(businessType, format) {
         button.classList.add('loading');
         button.disabled = true;
 
+        // Add pulse animation to draw attention
+        button.classList.add('pulse');
+
         // Call the export API
         const response = await fetch('api/export-business-plan.php', {
             method: 'POST',
@@ -56,9 +59,17 @@ async function exportBusinessPlan(businessType, format) {
         showNotification(`❌ Export failed: ${error.message}`, 'error');
     } finally {
         // Reset button state
-        button.classList.remove('loading');
+        button.classList.remove('loading', 'pulse');
         button.innerHTML = originalText;
         button.disabled = false;
+
+        // Add a brief success animation if export was successful
+        if (result && result.success) {
+            button.style.transform = 'scale(1.1)';
+            setTimeout(() => {
+                button.style.transform = '';
+            }, 200);
+        }
     }
 }
 
@@ -100,26 +111,29 @@ function showNotification(message, type = 'info') {
                 top: 20px;
                 right: 20px;
                 z-index: 10000;
-                padding: 15px 20px;
-                border-radius: 8px;
-                box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-                max-width: 400px;
-                animation: slideIn 0.3s ease-out;
+                padding: 18px 24px;
+                border-radius: 16px;
+                box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+                max-width: 450px;
+                animation: slideIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+                backdrop-filter: blur(10px);
+                border: 1px solid rgba(255, 255, 255, 0.1);
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             }
             .notification-success {
-                background: #d4edda;
-                color: #155724;
-                border: 1px solid #c3e6cb;
+                background: linear-gradient(135deg, rgba(40, 167, 69, 0.9) 0%, rgba(25, 135, 84, 0.9) 100%);
+                color: white;
+                border: 1px solid rgba(40, 167, 69, 0.3);
             }
             .notification-error {
-                background: #f8d7da;
-                color: #721c24;
-                border: 1px solid #f5c6cb;
+                background: linear-gradient(135deg, rgba(220, 53, 69, 0.9) 0%, rgba(200, 35, 51, 0.9) 100%);
+                color: white;
+                border: 1px solid rgba(220, 53, 69, 0.3);
             }
             .notification-info {
-                background: #d1ecf1;
-                color: #0c5460;
-                border: 1px solid #bee5eb;
+                background: linear-gradient(135deg, rgba(13, 202, 240, 0.9) 0%, rgba(23, 162, 184, 0.9) 100%);
+                color: white;
+                border: 1px solid rgba(13, 202, 240, 0.3);
             }
             .notification-content {
                 display: flex;
@@ -127,15 +141,25 @@ function showNotification(message, type = 'info') {
                 align-items: center;
             }
             .notification-close {
-                background: none;
+                background: rgba(255, 255, 255, 0.2);
                 border: none;
-                font-size: 18px;
+                border-radius: 50%;
+                width: 24px;
+                height: 24px;
+                font-size: 16px;
                 cursor: pointer;
-                margin-left: 10px;
-                opacity: 0.7;
+                margin-left: 12px;
+                opacity: 0.8;
+                color: white;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                transition: all 0.3s ease;
             }
             .notification-close:hover {
                 opacity: 1;
+                background: rgba(255, 255, 255, 0.3);
+                transform: scale(1.1);
             }
             @keyframes slideIn {
                 from { transform: translateX(100%); opacity: 0; }

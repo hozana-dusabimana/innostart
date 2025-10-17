@@ -109,36 +109,56 @@ class MusanzeSmartModel:
             
             # Map common business type queries to dataset business types
             business_mapping = {
+                # Direct matches from dataset
+                'local restaurant': ['Local Restaurant'],
+                'coffee processing': ['Coffee Processing'],
+                'organic farming': ['Organic Farming'],
+                'internet cafe': ['Internet Cafe'],
+                'eco-lodges': ['Eco-lodges'],
+                'eco-lodge': ['Eco-lodges'],
+                'souvenir shop': ['Souvenir Shop'],
+                'local transport': ['Local Transport'],
+                'local guide services': ['Local Guide Services'],
+                'volcano trekking': ['Volcano Trekking'],
+                'food processing': ['Food Processing'],
+                'guesthouse': ['Guesthouse'],
+                'mountain hiking tours': ['Mountain Hiking Tours'],
+                # Common variations and related terms
                 'restaurant': ['Local Restaurant', 'Food Processing'],
                 'coffee': ['Coffee Processing', 'Organic Farming'],
                 'hotel': ['Guesthouse', 'Eco-lodges'],
                 'lodge': ['Eco-lodges', 'Guesthouse'],
-                'transport': ['Local Transport', 'Motorcycle Taxi'],
+                'transport': ['Local Transport'],
                 'shop': ['Souvenir Shop', 'Internet Cafe'],
                 'souvenir': ['Souvenir Shop'],
                 'gift': ['Souvenir Shop'],
                 'hiking': ['Mountain Hiking Tours', 'Volcano Trekking'],
                 'mountain': ['Mountain Hiking Tours', 'Volcano Trekking'],
                 'tour': ['Mountain Hiking Tours', 'Volcano Trekking', 'Local Guide Services'],
+                'tours': ['Mountain Hiking Tours', 'Volcano Trekking', 'Local Guide Services'],
                 'guide': ['Local Guide Services', 'Mountain Hiking Tours'],
-                'farming': ['Organic Farming', 'Agricultural Equipment'],
-                'agriculture': ['Organic Farming', 'Agricultural Equipment'],
-                'craft': ['Craft Workshops', 'Traditional Crafts'],
-                'traditional': ['Traditional Crafts', 'Craft Workshops'],
-                'adventure': ['Adventure Sports', 'Mountain Hiking Tours'],
-                'cultural': ['Cultural Tourism', 'Traditional Crafts'],
-                'wildlife': ['Wildlife Photography', 'Cultural Tourism'],
-                'photography': ['Wildlife Photography'],
+                'farming': ['Organic Farming'],
+                'agriculture': ['Organic Farming'],
+                'craft': ['Souvenir Shop'],
+                'traditional': ['Souvenir Shop'],
+                'adventure': ['Mountain Hiking Tours', 'Volcano Trekking'],
+                'cultural': ['Local Guide Services', 'Souvenir Shop'],
+                'wildlife': ['Local Guide Services', 'Eco-lodges'],
+                'photography': ['Local Guide Services'],
                 'internet': ['Internet Cafe'],
                 'cafe': ['Internet Cafe', 'Local Restaurant'],
-                'mobile': ['Mobile Money Services'],
-                'money': ['Mobile Money Services'],
-                'equipment': ['Agricultural Equipment'],
+                'mobile': ['Internet Cafe'],
+                'money': ['Internet Cafe'],
+                'equipment': ['Local Transport'],
                 'organic': ['Organic Farming'],
                 'food': ['Food Processing', 'Local Restaurant'],
                 'processing': ['Food Processing', 'Coffee Processing'],
-                'tourism': ['Mountain Hiking Tours', 'Volcano Trekking', 'Local Guide Services', 'Cultural Tourism', 'Wildlife Photography', 'Adventure Sports'],
-                'hospitality': ['Guesthouse', 'Eco-lodges', 'Local Restaurant']
+                'tourism': ['Mountain Hiking Tours', 'Volcano Trekking', 'Local Guide Services', 'Eco-lodges', 'Guesthouse', 'Souvenir Shop'],
+                'hospitality': ['Guesthouse', 'Eco-lodges', 'Local Restaurant'],
+                'bed': ['Guesthouse', 'Eco-lodges'],
+                'breakfast': ['Guesthouse', 'Eco-lodges'],
+                'accommodation': ['Guesthouse', 'Eco-lodges'],
+                'trekking': ['Volcano Trekking', 'Mountain Hiking Tours']
             }
             
             # Get matching business types
@@ -191,36 +211,56 @@ class MusanzeSmartModel:
             
             # Map common business type queries to dataset business types
             business_mapping = {
+                # Direct matches from dataset
+                'local restaurant': ['Local Restaurant'],
+                'coffee processing': ['Coffee Processing'],
+                'organic farming': ['Organic Farming'],
+                'internet cafe': ['Internet Cafe'],
+                'eco-lodges': ['Eco-lodges'],
+                'eco-lodge': ['Eco-lodges'],
+                'souvenir shop': ['Souvenir Shop'],
+                'local transport': ['Local Transport'],
+                'local guide services': ['Local Guide Services'],
+                'volcano trekking': ['Volcano Trekking'],
+                'food processing': ['Food Processing'],
+                'guesthouse': ['Guesthouse'],
+                'mountain hiking tours': ['Mountain Hiking Tours'],
+                # Common variations and related terms
                 'restaurant': ['Local Restaurant', 'Food Processing'],
                 'coffee': ['Coffee Processing', 'Organic Farming'],
                 'hotel': ['Guesthouse', 'Eco-lodges'],
                 'lodge': ['Eco-lodges', 'Guesthouse'],
-                'transport': ['Local Transport', 'Motorcycle Taxi'],
+                'transport': ['Local Transport'],
                 'shop': ['Souvenir Shop', 'Internet Cafe'],
                 'souvenir': ['Souvenir Shop'],
                 'gift': ['Souvenir Shop'],
                 'hiking': ['Mountain Hiking Tours', 'Volcano Trekking'],
                 'mountain': ['Mountain Hiking Tours', 'Volcano Trekking'],
                 'tour': ['Mountain Hiking Tours', 'Volcano Trekking', 'Local Guide Services'],
+                'tours': ['Mountain Hiking Tours', 'Volcano Trekking', 'Local Guide Services'],
                 'guide': ['Local Guide Services', 'Mountain Hiking Tours'],
-                'farming': ['Organic Farming', 'Agricultural Equipment'],
-                'agriculture': ['Organic Farming', 'Agricultural Equipment'],
-                'craft': ['Craft Workshops', 'Traditional Crafts'],
-                'traditional': ['Traditional Crafts', 'Craft Workshops'],
-                'adventure': ['Adventure Sports', 'Mountain Hiking Tours'],
-                'cultural': ['Cultural Tourism', 'Traditional Crafts'],
-                'wildlife': ['Wildlife Photography', 'Cultural Tourism'],
-                'photography': ['Wildlife Photography'],
+                'farming': ['Organic Farming'],
+                'agriculture': ['Organic Farming'],
+                'craft': ['Souvenir Shop'],
+                'traditional': ['Souvenir Shop'],
+                'adventure': ['Mountain Hiking Tours', 'Volcano Trekking'],
+                'cultural': ['Local Guide Services', 'Souvenir Shop'],
+                'wildlife': ['Local Guide Services', 'Eco-lodges'],
+                'photography': ['Local Guide Services'],
                 'internet': ['Internet Cafe'],
                 'cafe': ['Internet Cafe', 'Local Restaurant'],
-                'mobile': ['Mobile Money Services'],
-                'money': ['Mobile Money Services'],
-                'equipment': ['Agricultural Equipment'],
+                'mobile': ['Internet Cafe'],
+                'money': ['Internet Cafe'],
+                'equipment': ['Local Transport'],
                 'organic': ['Organic Farming'],
                 'food': ['Food Processing', 'Local Restaurant'],
                 'processing': ['Food Processing', 'Coffee Processing'],
-                'tourism': ['Mountain Hiking Tours', 'Volcano Trekking', 'Local Guide Services', 'Cultural Tourism', 'Wildlife Photography', 'Adventure Sports'],
-                'hospitality': ['Guesthouse', 'Eco-lodges', 'Local Restaurant']
+                'tourism': ['Mountain Hiking Tours', 'Volcano Trekking', 'Local Guide Services', 'Eco-lodges', 'Guesthouse', 'Souvenir Shop'],
+                'hospitality': ['Guesthouse', 'Eco-lodges', 'Local Restaurant'],
+                'bed': ['Guesthouse', 'Eco-lodges'],
+                'breakfast': ['Guesthouse', 'Eco-lodges'],
+                'accommodation': ['Guesthouse', 'Eco-lodges'],
+                'trekking': ['Volcano Trekking', 'Mountain Hiking Tours']
             }
             
             # Parse budget range
@@ -305,10 +345,18 @@ class MusanzeSmartModel:
             
             if has_budget:
                 # Check if there's also a business type mentioned
-                business_types = ['restaurant', 'coffee', 'hotel', 'lodge', 'transport', 'shop', 'souvenir', 'gift', 
-                                'hiking', 'mountain', 'tour', 'guide', 'farming', 'agriculture', 'craft', 'traditional',
-                                'adventure', 'cultural', 'wildlife', 'photography', 'internet', 'cafe', 'mobile', 
-                                'money', 'equipment', 'organic', 'food', 'processing']
+                business_types = [
+                    # Direct dataset business types
+                    'local restaurant', 'coffee processing', 'organic farming', 'internet cafe', 'eco-lodges', 'eco-lodge',
+                    'souvenir shop', 'local transport', 'local guide services', 'volcano trekking', 'food processing',
+                    'guesthouse', 'mountain hiking tours',
+                    # Common variations and related terms
+                    'restaurant', 'coffee', 'hotel', 'lodge', 'transport', 'shop', 'souvenir', 'gift', 
+                    'hiking', 'mountain', 'tour', 'tours', 'guide', 'farming', 'agriculture', 'craft', 'traditional',
+                    'adventure', 'cultural', 'wildlife', 'photography', 'internet', 'cafe', 'mobile', 
+                    'money', 'equipment', 'organic', 'food', 'processing', 'tourism', 'hospitality',
+                    'bed', 'breakfast', 'accommodation', 'trekking'
+                ]
                 
                 business_type_found = None
                 for business_type in business_types:
@@ -326,10 +374,18 @@ class MusanzeSmartModel:
                         return budget_response
             
             # Check for specific business type queries
-            business_types = ['restaurant', 'coffee', 'hotel', 'lodge', 'transport', 'shop', 'souvenir', 'gift', 
-                            'hiking', 'mountain', 'tour', 'guide', 'farming', 'agriculture', 'craft', 'traditional',
-                            'adventure', 'cultural', 'wildlife', 'photography', 'internet', 'cafe', 'mobile', 
-                            'money', 'equipment', 'organic', 'food', 'processing', 'tourism', 'hospitality']
+            business_types = [
+                # Direct dataset business types
+                'local restaurant', 'coffee processing', 'organic farming', 'internet cafe', 'eco-lodges', 'eco-lodge',
+                'souvenir shop', 'local transport', 'local guide services', 'volcano trekking', 'food processing',
+                'guesthouse', 'mountain hiking tours',
+                # Common variations and related terms
+                'restaurant', 'coffee', 'hotel', 'lodge', 'transport', 'shop', 'souvenir', 'gift', 
+                'hiking', 'mountain', 'tour', 'tours', 'guide', 'farming', 'agriculture', 'craft', 'traditional',
+                'adventure', 'cultural', 'wildlife', 'photography', 'internet', 'cafe', 'mobile', 
+                'money', 'equipment', 'organic', 'food', 'processing', 'tourism', 'hospitality',
+                'bed', 'breakfast', 'accommodation', 'trekking'
+            ]
             
             # Check if user provides both business type and budget range
             business_type_found = None

@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enhanced Export Buttons Demo - InnoStart</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .demo-container {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            width: 100%;
+        }
+
+        .demo-title {
+            color: white;
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .demo-subtitle {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 16px;
+            margin-bottom: 30px;
+            line-height: 1.5;
+        }
+
+        .business-info {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .business-info h3 {
+            color: white;
+            margin: 0 0 10px 0;
+            font-size: 20px;
+        }
+
+        .business-info p {
+            color: rgba(255, 255, 255, 0.8);
+            margin: 5px 0;
+            font-size: 14px;
+        }
+
+        .export-section {
+            margin-top: 20px;
+        }
+
+        .export-section h4 {
+            color: white;
+            font-size: 18px;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="demo-container">
+        <h1 class="demo-title">🚀 Enhanced Export Buttons</h1>
+        <p class="demo-subtitle">Modern, professional export buttons with smooth animations and loading states</p>
+
+        <div class="business-info">
+            <h3>📊 Coffee Processing Business</h3>
+            <p><strong>Location:</strong> Musanze District</p>
+            <p><strong>Startup Cost:</strong> 12,458,154 RWF</p>
+            <p><strong>Revenue Potential:</strong> 130,254 RWF per month</p>
+            <p><strong>Target Market:</strong> International Tourists</p>
+        </div>
+
+        <div class="export-section">
+            <h4>📄 Export Options:</h4>
+            <div class="export-buttons-container">
+                <button onclick="exportBusinessPlan('Coffee Processing', 'pdf')" class="export-btn pdf-btn">
+                    PDF Export
+                </button>
+                <button onclick="exportBusinessPlan('Coffee Processing', 'word')" class="export-btn word-btn">
+                    Word Export
+                </button>
+                <button onclick="exportBusinessPlan('Coffee Processing', 'excel')" class="export-btn excel-btn">
+                    Excel Export
+                </button>
+            </div>
+        </div>
+
+        <div style="margin-top: 30px; color: rgba(255, 255, 255, 0.7); font-size: 14px;">
+            <p>✨ Features: Loading states, hover animations, modern gradients, responsive design</p>
+        </div>
+    </div>
+
+    <script src="assets/js/main.js"></script>
+    <script>
+        // Demo export function
+        async function exportBusinessPlan(businessType, format) {
+            try {
+                // Show loading state
+                const button = event.target;
+                const originalText = button.innerHTML;
+                button.classList.add('loading');
+                button.disabled = true;
+                button.classList.add('pulse');
+
+                // Simulate API call
+                await new Promise(resolve => setTimeout(resolve, 2000));
+
+                // Show success notification
+                showNotification(`✅ ${format.toUpperCase()} business plan for ${businessType} generated successfully!`, 'success');
+
+            } catch (error) {
+                showNotification(`❌ Export failed: ${error.message}`, 'error');
+            } finally {
+                // Reset button state
+                button.classList.remove('loading', 'pulse');
+                button.disabled = false;
+                button.innerHTML = originalText;
+
+                // Add success animation
+                button.style.transform = 'scale(1.1)';
+                setTimeout(() => {
+                    button.style.transform = '';
+                }, 200);
+            }
+        }
+    </script>
+</body>
+
+</html>

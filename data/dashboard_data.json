@@ -56,8 +56,8 @@
             "id": 21,
             "type": "chat",
             "title": "AI Chat Session",
-            "description": "Discussed: Souvenir and gift shops",
-            "timestamp": 1760477832,
+            "description": "Discussed: Tour guide services",
+            "timestamp": 1760684731,
             "icon": "fas fa-comments",
             "color": "success"
         },
@@ -66,7 +66,43 @@
             "type": "chat",
             "title": "AI Chat Session",
             "description": "Discussed: Tourism & Hospitality:",
-            "timestamp": 1760477821,
+            "timestamp": 1760684718,
+            "icon": "fas fa-comments",
+            "color": "success"
+        },
+        {
+            "id": 21,
+            "type": "chat",
+            "title": "AI Chat Session",
+            "description": "Discussed: and revenue potential in RWF!",
+            "timestamp": 1760684712,
+            "icon": "fas fa-comments",
+            "color": "success"
+        },
+        {
+            "id": 21,
+            "type": "chat",
+            "title": "AI Chat Session",
+            "description": "Discussed: business opportunitie",
+            "timestamp": 1760684704,
+            "icon": "fas fa-comments",
+            "color": "success"
+        },
+        {
+            "id": 21,
+            "type": "chat",
+            "title": "AI Chat Session",
+            "description": "Discussed: \u2022 Tour guide services",
+            "timestamp": 1760684650,
+            "icon": "fas fa-comments",
+            "color": "success"
+        },
+        {
+            "id": 21,
+            "type": "chat",
+            "title": "AI Chat Session",
+            "description": "Discussed: Tourism & Hospitality:",
+            "timestamp": 1760684641,
             "icon": "fas fa-comments",
             "color": "success"
         },
@@ -75,7 +111,7 @@
             "type": "chat",
             "title": "AI Chat Session",
             "description": "Discussed: 500,000 - 1,000,000 RWF",
-            "timestamp": 1760477815,
+            "timestamp": 1760684636,
             "icon": "fas fa-comments",
             "color": "success"
         },
@@ -84,7 +120,7 @@
             "type": "chat",
             "title": "AI Chat Session",
             "description": "Discussed: business opportunities",
-            "timestamp": 1760477805,
+            "timestamp": 1760684630,
             "icon": "fas fa-comments",
             "color": "success"
         },
@@ -92,8 +128,8 @@
             "id": 21,
             "type": "chat",
             "title": "AI Chat Session",
-            "description": "Discussed: Technology:",
-            "timestamp": 1760477791,
+            "description": "Discussed: Tour guide services",
+            "timestamp": 1760684386,
             "icon": "fas fa-comments",
             "color": "success"
         },
@@ -101,8 +137,8 @@
             "id": 21,
             "type": "chat",
             "title": "AI Chat Session",
-            "description": "Discussed: Agriculture",
-            "timestamp": 1760477778,
+            "description": "Discussed: Tourism & Hospitality:",
+            "timestamp": 1760684376,
             "icon": "fas fa-comments",
             "color": "success"
         },
@@ -111,97 +147,7 @@
             "type": "chat",
             "title": "AI Chat Session",
             "description": "Discussed: 500,000 - 1,000,000 RWF",
-            "timestamp": 1760477770,
-            "icon": "fas fa-comments",
-            "color": "success"
-        },
-        {
-            "id": 21,
-            "type": "chat",
-            "title": "AI Chat Session",
-            "description": "Discussed: Business Opportunities",
-            "timestamp": 1760477764,
-            "icon": "fas fa-comments",
-            "color": "success"
-        },
-        {
-            "id": 21,
-            "type": "chat",
-            "title": "AI Chat Session",
-            "description": "Discussed: khbds\\",
-            "timestamp": 1760477747,
-            "icon": "fas fa-comments",
-            "color": "success"
-        },
-        {
-            "id": 21,
-            "type": "chat",
-            "title": "AI Chat Session",
-            "description": "Discussed: hello",
-            "timestamp": 1760477744,
-            "icon": "fas fa-comments",
-            "color": "success"
-        },
-        {
-            "id": 21,
-            "type": "chat",
-            "title": "AI Chat Session",
-            "description": "Discussed: Organic Farming:",
-            "timestamp": 1760477245,
-            "icon": "fas fa-comments",
-            "color": "success"
-        },
-        {
-            "id": 21,
-            "type": "chat",
-            "title": "AI Chat Session",
-            "description": "Discussed: Agriculture:",
-            "timestamp": 1760477237,
-            "icon": "fas fa-comments",
-            "color": "success"
-        },
-        {
-            "id": 21,
-            "type": "chat",
-            "title": "AI Chat Session",
-            "description": "Discussed: opportunities, startup costs",
-            "timestamp": 1760477228,
-            "icon": "fas fa-comments",
-            "color": "success"
-        },
-        {
-            "id": 21,
-            "type": "chat",
-            "title": "AI Chat Session",
-            "description": "Discussed: pdf",
-            "timestamp": 1760476904,
-            "icon": "fas fa-comments",
-            "color": "success"
-        },
-        {
-            "id": 21,
-            "type": "chat",
-            "title": "AI Chat Session",
-            "description": "Discussed: Organic Farming:",
-            "timestamp": 1760476895,
-            "icon": "fas fa-comments",
-            "color": "success"
-        },
-        {
-            "id": 21,
-            "type": "chat",
-            "title": "AI Chat Session",
-            "description": "Discussed: Agriculture:",
-            "timestamp": 1760476888,
-            "icon": "fas fa-comments",
-            "color": "success"
-        },
-        {
-            "id": 21,
-            "type": "chat",
-            "title": "AI Chat Session",
-            "description": "Discussed: 1,000,000 - 3,000,000 RWF",
-            "timestamp": 1760476881,
+            "timestamp": 1760684370,
             "icon": "fas fa-comments",
             "color": "success"
         },
@@ -210,7 +156,7 @@
             "type": "chat",
             "title": "AI Chat Session",
             "description": "Discussed: business opportunities",
-            "timestamp": 1760476875,
+            "timestamp": 1760684363,
             "icon": "fas fa-comments",
             "color": "success"
         },
@@ -218,8 +164,8 @@
             "id": 21,
             "type": "chat",
             "title": "AI Chat Session",
-            "description": "Discussed: Local Guide Services:",
-            "timestamp": 1760476422,
+            "description": "Discussed: \u2022 Bed & breakfast or guesthouse",
+            "timestamp": 1760683474,
             "icon": "fas fa-comments",
             "color": "success"
         },
@@ -228,7 +174,61 @@
             "type": "chat",
             "title": "AI Chat Session",
             "description": "Discussed: Tourism & Hospitality",
-            "timestamp": 1760476411,
+            "timestamp": 1760683465,
+            "icon": "fas fa-comments",
+            "color": "success"
+        },
+        {
+            "id": 21,
+            "type": "chat",
+            "title": "AI Chat Session",
+            "description": "Discussed: \u2022 500,000 - 1,000,000 RWF",
+            "timestamp": 1760683457,
+            "icon": "fas fa-comments",
+            "color": "success"
+        },
+        {
+            "id": 21,
+            "type": "chat",
+            "title": "AI Chat Session",
+            "description": "Discussed: Business Opportunities",
+            "timestamp": 1760683450,
+            "icon": "fas fa-comments",
+            "color": "success"
+        },
+        {
+            "id": 21,
+            "type": "chat",
+            "title": "AI Chat Session",
+            "description": "Discussed: hello",
+            "timestamp": 1760683442,
+            "icon": "fas fa-comments",
+            "color": "success"
+        },
+        {
+            "id": 21,
+            "type": "chat",
+            "title": "AI Chat Session",
+            "description": "Discussed: Your Skills:",
+            "timestamp": 1760648899,
+            "icon": "fas fa-comments",
+            "color": "success"
+        },
+        {
+            "id": 21,
+            "type": "chat",
+            "title": "AI Chat Session",
+            "description": "Discussed: Tour guide services",
+            "timestamp": 1760648889,
+            "icon": "fas fa-comments",
+            "color": "success"
+        },
+        {
+            "id": 21,
+            "type": "chat",
+            "title": "AI Chat Session",
+            "description": "Discussed: Tourism & Hospitality:",
+            "timestamp": 1760648877,
             "icon": "fas fa-comments",
             "color": "success"
         }

@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Export Buttons</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="assets/css/dashboard.css?v=20241220" rel="stylesheet">
+    <style>
+        body {
+            background: #f5f7fa;
+            padding: 50px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .test-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+        .test-title {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+        }
+        .business-info {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1 class="test-title">🧪 Export Buttons Test</h1>
+        
+        <div class="business-info">
+            <h3>📊 Coffee Processing Business</h3>
+            <p><strong>Location:</strong> Musanze District</p>
+            <p><strong>Startup Cost:</strong> 12,458,154 RWF</p>
+            <p><strong>Revenue Potential:</strong> 130,254 RWF per month</p>
+        </div>
+        
+        <h4>📄 Export Options:</h4>
+        <div class="export-buttons-container">
+            <button onclick="testExport('pdf')" class="export-btn pdf-btn">
+                PDF Export
+            </button>
+            <button onclick="testExport('word')" class="export-btn word-btn">
+                Word Export
+            </button>
+            <button onclick="testExport('excel')" class="export-btn excel-btn">
+                Excel Export
+            </button>
+        </div>
+        
+        <div style="margin-top: 30px; padding: 20px; background: #e9ecef; border-radius: 8px;">
+            <h5>Expected Results:</h5>
+            <ul>
+                <li>✅ Buttons should have modern gradients (red, blue, green)</li>
+                <li>✅ Buttons should have rounded corners and shadows</li>
+                <li>✅ Buttons should have emoji icons (📄, 📝, 📊)</li>
+                <li>✅ Hover effects should work (scale, shadow, shimmer)</li>
+                <li>✅ Container should have glassmorphism background</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        function testExport(format) {
+            alert(`Testing ${format.toUpperCase()} export button!`);
+        }
+    </script>
+</body>
+</html>

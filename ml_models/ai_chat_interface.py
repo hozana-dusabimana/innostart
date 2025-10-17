@@ -104,7 +104,17 @@ Please select your budget range or tell me your specific budget amount."""
 
 Please select your budget range or tell me your specific amount."""
 
-    elif intent == 'specific_business' or any(word in message_lower for word in ['coffee', 'restaurant', 'tourism', 'agriculture']):
+    elif intent == 'specific_business' or any(word in message_lower for word in [
+        # Direct dataset business types
+        'local restaurant', 'coffee processing', 'organic farming', 'internet cafe', 'eco-lodges', 'eco-lodge',
+        'souvenir shop', 'local transport', 'local guide services', 'volcano trekking', 'food processing',
+        'guesthouse', 'mountain hiking tours',
+        # Common variations and related terms
+        'coffee', 'restaurant', 'tourism', 'agriculture', 'bed', 'breakfast', 'hotel', 'lodge', 'accommodation',
+        'transport', 'shop', 'souvenir', 'gift', 'hiking', 'mountain', 'tour', 'tours', 'guide', 'farming',
+        'craft', 'traditional', 'adventure', 'cultural', 'wildlife', 'photography', 'internet', 'cafe',
+        'mobile', 'money', 'equipment', 'organic', 'food', 'processing', 'hospitality', 'trekking'
+    ]):
         return f"""Excellent! You're interested in {message}. Let me provide you with comprehensive information about this business opportunity in Musanze, Rwanda.
 
 I'll generate a detailed business plan including:

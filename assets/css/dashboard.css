@@ -916,3 +916,192 @@ body {
 .dark-mode .stat-content p {
     color: #cccccc !important;
 }
+
+/* Export Button Styles - Modern Professional Design */
+button.export-btn,
+.export-btn {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 14px 24px !important;
+    margin: 8px !important;
+    border: none !important;
+    border-radius: 16px !important;
+    font-size: 14px !important;
+    font-weight: 700 !important;
+    cursor: pointer !important;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    text-decoration: none !important;
+    color: white !important;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15) !important;
+    position: relative !important;
+    overflow: hidden !important;
+    min-width: 160px !important;
+    text-align: center !important;
+    letter-spacing: 0.8px !important;
+    text-transform: uppercase !important;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
+    backdrop-filter: blur(10px) !important;
+    border: 2px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+.export-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s;
+}
+
+.export-btn:hover::before {
+    left: 100%;
+}
+
+.export-btn:hover {
+    transform: translateY(-4px) scale(1.05);
+    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.25);
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
+.export-btn:active {
+    transform: translateY(-1px) scale(1.01);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+}
+
+.export-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.export-btn:disabled::before {
+    display: none;
+}
+
+/* PDF Export Button - Red Theme */
+button.pdf-btn,
+.pdf-btn {
+    background: linear-gradient(135deg, #ff4757 0%, #ff3742 50%, #ff2f3a 100%) !important;
+    border: 2px solid rgba(255, 71, 87, 0.3) !important;
+}
+
+.pdf-btn:hover:not(:disabled) {
+    background: linear-gradient(135deg, #ff3742 0%, #ff2f3a 50%, #ff2833 100%);
+    box-shadow: 0 12px 35px rgba(255, 71, 87, 0.5);
+    border-color: rgba(255, 71, 87, 0.6);
+}
+
+.pdf-btn::after {
+    content: '📄';
+    margin-left: 10px;
+    font-size: 18px;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+}
+
+/* Word Export Button - Blue Theme */
+button.word-btn,
+.word-btn {
+    background: linear-gradient(135deg, #3742fa 0%, #2f3542 50%, #2c2e3e 100%) !important;
+    border: 2px solid rgba(55, 66, 250, 0.3) !important;
+}
+
+.word-btn:hover:not(:disabled) {
+    background: linear-gradient(135deg, #2f3542 0%, #2c2e3e 50%, #2a2c3a 100%);
+    box-shadow: 0 12px 35px rgba(55, 66, 250, 0.5);
+    border-color: rgba(55, 66, 250, 0.6);
+}
+
+.word-btn::after {
+    content: '📝';
+    margin-left: 10px;
+    font-size: 18px;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+}
+
+/* Excel Export Button - Green Theme */
+button.excel-btn,
+.excel-btn {
+    background: linear-gradient(135deg, #2ed573 0%, #1e90ff 50%, #3742fa 100%) !important;
+    border: 2px solid rgba(46, 213, 115, 0.3) !important;
+}
+
+.excel-btn:hover:not(:disabled) {
+    background: linear-gradient(135deg, #1e90ff 0%, #3742fa 50%, #2f3542 100%);
+    box-shadow: 0 12px 35px rgba(46, 213, 115, 0.5);
+    border-color: rgba(46, 213, 115, 0.6);
+}
+
+.excel-btn::after {
+    content: '📊';
+    margin-left: 10px;
+    font-size: 18px;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+}
+
+/* Export Button Container */
+.export-buttons-container {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    justify-content: center !important;
+    align-items: center !important;
+    gap: 15px !important;
+    margin: 25px 0 !important;
+    padding: 25px !important;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%) !important;
+    border-radius: 20px !important;
+    backdrop-filter: blur(10px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Loading State for Export Buttons */
+.export-btn.loading {
+    pointer-events: none;
+    opacity: 0.8;
+}
+
+.export-btn.loading::after {
+    content: '';
+    width: 16px;
+    height: 16px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-top: 2px solid white;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-left: 10px;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Pulse Animation for Export Buttons */
+.export-btn.pulse {
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% { box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15); }
+    50% { box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15), 0 0 0 10px rgba(255, 255, 255, 0.1); }
+    100% { box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15); }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .export-btn {
+        min-width: 120px;
+        padding: 10px 16px;
+        font-size: 13px;
+        margin: 4px;
+    }
+    
+    .export-buttons-container {
+        padding: 15px;
+        gap: 10px;
+    }
+}
