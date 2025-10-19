@@ -232,6 +232,23 @@ INSERT INTO resources (title, description, category, resource_type, tags, is_fea
 ('Business Plan Structure', 'Complete business plan structure and guidelines', 'Planning', 'template', '["business plan", "structure", "template"]', TRUE, TRUE),
 ('Funding Strategy Toolkit', 'Tools and strategies for securing business funding', 'Funding', 'toolkit', '["funding", "investment", "strategy"]', TRUE, TRUE);
 
+-- Financial projections table
+CREATE TABLE IF NOT EXISTS financial_projections (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    business_name VARCHAR(255) NOT NULL,
+    business_type VARCHAR(100) NOT NULL,
+    projection_data JSON NOT NULL,
+    status ENUM('draft', 'completed', 'archived') DEFAULT 'draft',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    INDEX idx_user_id (user_id),
+    INDEX idx_business_type (business_type),
+    INDEX idx_status (status),
+    INDEX idx_created_at (created_at)
+);
+
 -- Create indexes for better performance
 CREATE INDEX idx_users_created_at ON users(created_at);
 CREATE INDEX idx_business_plans_created_at ON business_plans(created_at);

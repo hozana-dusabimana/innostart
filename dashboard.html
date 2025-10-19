@@ -52,6 +52,12 @@
                 </a>
             </div>
             <div class="nav-item">
+                <a href="#" class="nav-link" data-section="financial-projections">
+                    <i class="fas fa-calculator"></i>
+                    Financial Projections
+                </a>
+            </div>
+            <div class="nav-item">
                 <a href="#" class="nav-link" data-section="settings">
                     <i class="fas fa-cog"></i>
                     Settings
@@ -158,6 +164,10 @@
                             <a href="#" class="quick-action" onclick="showSection('analytics')">
                                 <i class="fas fa-chart-bar"></i>
                                 <div>View Analytics</div>
+                            </a>
+                            <a href="#" class="quick-action" onclick="showSection('financial-projections')">
+                                <i class="fas fa-calculator"></i>
+                                <div>Financial Projections</div>
                             </a>
                         </div>
                     </div>
@@ -588,6 +598,278 @@
                             </div>
                             <div class="col-md-6">
                                 <canvas id="userGrowthChart" width="400" height="200"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Financial Projections Section -->
+            <div id="financial-projections" class="section">
+                <div class="dashboard-card">
+                    <div class="card-header">
+                        <h5><i class="fas fa-calculator me-2"></i>Financial Projections</h5>
+                    </div>
+                    <div class="card-body">
+                        <!-- Financial Input Form -->
+                        <form id="financialProjectionForm">
+                            <div class="row mb-4">
+                                <div class="col-md-6">
+                                    <h6 class="text-primary mb-3"><i class="fas fa-info-circle me-2"></i>Business
+                                        Information</h6>
+                                    <div class="mb-3">
+                                        <label for="fpBusinessName" class="form-label">Business Name</label>
+                                        <input type="text" class="form-control" id="fpBusinessName"
+                                            placeholder="Enter business name">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="fpBusinessType" class="form-label">Business Type</label>
+                                        <select class="form-select" id="fpBusinessType">
+                                            <option value="">Select Business Type</option>
+                                            <option value="retail">Retail/E-commerce</option>
+                                            <option value="service">Service Business</option>
+                                            <option value="manufacturing">Manufacturing</option>
+                                            <option value="restaurant">Restaurant/Food Service</option>
+                                            <option value="tourism">Tourism/Hospitality</option>
+                                            <option value="agriculture">Agriculture</option>
+                                            <option value="technology">Technology/Software</option>
+                                        </select>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="projectionPeriod" class="form-label">Projection Period
+                                            (Years)</label>
+                                        <select class="form-select" id="projectionPeriod">
+                                            <option value="1">1 Year</option>
+                                            <option value="2">2 Years</option>
+                                            <option value="3" selected>3 Years</option>
+                                            <option value="5">5 Years</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <h6 class="text-success mb-3"><i class="fas fa-dollar-sign me-2"></i>Financial
+                                        Inputs</h6>
+                                    <div class="mb-3">
+                                        <label for="initialInvestment" class="form-label">Initial Investment
+                                            (RWF)</label>
+                                        <input type="number" class="form-control" id="initialInvestment" placeholder="0"
+                                            min="0">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="monthlyRevenue" class="form-label">Expected Monthly Revenue
+                                            (RWF)</label>
+                                        <input type="number" class="form-control" id="monthlyRevenue" placeholder="0"
+                                            min="0">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="monthlyExpenses" class="form-label">Expected Monthly Expenses
+                                            (RWF)</label>
+                                        <input type="number" class="form-control" id="monthlyExpenses" placeholder="0"
+                                            min="0">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="growthRate" class="form-label">Annual Growth Rate (%)</label>
+                                        <input type="number" class="form-control" id="growthRate" placeholder="10"
+                                            min="0" max="100" step="0.1">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row mb-4">
+                                <div class="col-12">
+                                    <h6 class="text-warning mb-3"><i class="fas fa-cogs me-2"></i>Additional Parameters
+                                    </h6>
+                                    <div class="row">
+                                        <div class="col-md-3">
+                                            <div class="mb-3">
+                                                <label for="taxRate" class="form-label">Tax Rate (%)</label>
+                                                <input type="number" class="form-control" id="taxRate" placeholder="15"
+                                                    min="0" max="50" step="0.1">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="mb-3">
+                                                <label for="inflationRate" class="form-label">Inflation Rate (%)</label>
+                                                <input type="number" class="form-control" id="inflationRate"
+                                                    placeholder="5" min="0" max="20" step="0.1">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="mb-3">
+                                                <label for="discountRate" class="form-label">Discount Rate (%)</label>
+                                                <input type="number" class="form-control" id="discountRate"
+                                                    placeholder="12" min="0" max="30" step="0.1">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="mb-3">
+                                                <label for="breakEvenMonths" class="form-label">Break-even Period
+                                                    (Months)</label>
+                                                <input type="number" class="form-control" id="breakEvenMonths"
+                                                    placeholder="12" min="1" max="60">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="text-center mb-4">
+                                <button type="button" class="btn btn-primary btn-lg"
+                                    onclick="generateFinancialProjections()">
+                                    <i class="fas fa-chart-line me-2"></i>Generate Financial Projections
+                                </button>
+                            </div>
+                        </form>
+
+                        <!-- Financial Projections Results -->
+                        <div id="projectionResults" style="display: none;">
+                            <div class="row mb-4">
+                                <div class="col-12">
+                                    <h6 class="text-info mb-3"><i class="fas fa-chart-bar me-2"></i>Financial Summary
+                                    </h6>
+                                    <div class="row">
+                                        <div class="col-md-3">
+                                            <div class="stat-card">
+                                                <div class="stat-icon" style="background: var(--success-color);">
+                                                    <i class="fas fa-dollar-sign"></i>
+                                                </div>
+                                                <div class="stat-content">
+                                                    <h3 id="totalRevenue">0</h3>
+                                                    <p>Total Revenue</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="stat-card">
+                                                <div class="stat-icon" style="background: var(--danger-color);">
+                                                    <i class="fas fa-minus"></i>
+                                                </div>
+                                                <div class="stat-content">
+                                                    <h3 id="totalExpenses">0</h3>
+                                                    <p>Total Expenses</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="stat-card">
+                                                <div class="stat-icon" style="background: var(--primary-color);">
+                                                    <i class="fas fa-chart-line"></i>
+                                                </div>
+                                                <div class="stat-content">
+                                                    <h3 id="netProfit">0</h3>
+                                                    <p>Net Profit</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="stat-card">
+                                                <div class="stat-icon" style="background: var(--warning-color);">
+                                                    <i class="fas fa-percentage"></i>
+                                                </div>
+                                                <div class="stat-content">
+                                                    <h3 id="profitMargin">0%</h3>
+                                                    <p>Profit Margin</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Charts Section -->
+                            <div class="row mb-4">
+                                <div class="col-md-6">
+                                    <div class="dashboard-card">
+                                        <div class="card-header">
+                                            <h6><i class="fas fa-chart-line me-2"></i>Revenue vs Expenses</h6>
+                                        </div>
+                                        <div class="card-body">
+                                            <canvas id="revenueExpensesChart" width="400" height="300"></canvas>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="dashboard-card">
+                                        <div class="card-header">
+                                            <h6><i class="fas fa-chart-pie me-2"></i>Profit Distribution</h6>
+                                        </div>
+                                        <div class="card-body">
+                                            <canvas id="profitChart" width="400" height="300"></canvas>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Detailed Projections Table -->
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="dashboard-card">
+                                        <div class="card-header">
+                                            <h6><i class="fas fa-table me-2"></i>Monthly Projections</h6>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="table-responsive">
+                                                <table class="table table-striped" id="projectionsTable">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Month</th>
+                                                            <th>Revenue</th>
+                                                            <th>Expenses</th>
+                                                            <th>Gross Profit</th>
+                                                            <th>Tax</th>
+                                                            <th>Net Profit</th>
+                                                            <th>Cumulative Profit</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody id="projectionsTableBody">
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Export Options -->
+                            <div class="row mt-4">
+                                <div class="col-12">
+                                    <div class="export-buttons-container">
+                                        <h6 class="text-muted mb-3">
+                                            <i class="fas fa-download me-2"></i>Export Financial Projections
+                                        </h6>
+                                        <div class="row g-2">
+                                            <div class="col-6 col-md-3">
+                                                <button type="button" class="btn btn-outline-danger w-100 export-btn"
+                                                    onclick="exportFinancialProjections('pdf')" title="Export as PDF">
+                                                    <i class="fas fa-file-pdf me-1"></i>
+                                                    <span class="d-none d-md-inline">PDF</span>
+                                                </button>
+                                            </div>
+                                            <div class="col-6 col-md-3">
+                                                <button type="button" class="btn btn-outline-primary w-100 export-btn"
+                                                    onclick="exportFinancialProjections('excel')"
+                                                    title="Export as Excel">
+                                                    <i class="fas fa-file-excel me-1"></i>
+                                                    <span class="d-none d-md-inline">Excel</span>
+                                                </button>
+                                            </div>
+                                            <div class="col-6 col-md-3">
+                                                <button type="button" class="btn btn-outline-success w-100 export-btn"
+                                                    onclick="exportFinancialProjections('csv')" title="Export as CSV">
+                                                    <i class="fas fa-file-csv me-1"></i>
+                                                    <span class="d-none d-md-inline">CSV</span>
+                                                </button>
+                                            </div>
+                                            <div class="col-6 col-md-3">
+                                                <button type="button" class="btn btn-outline-warning w-100 export-btn"
+                                                    onclick="exportFinancialProjections('json')" title="Export as JSON">
+                                                    <i class="fas fa-file-code me-1"></i>
+                                                    <span class="d-none d-md-inline">JSON</span>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>

@@ -56,6 +56,105 @@
             "id": 21,
             "type": "chat",
             "title": "AI Chat Session",
+            "description": "Discussed: hello I'm Hozana",
+            "timestamp": 1760911129,
+            "icon": "fas fa-comments",
+            "color": "success"
+        },
+        {
+            "id": 21,
+            "type": "chat",
+            "title": "AI Chat Session",
+            "description": "Discussed: Internet Cafe:",
+            "timestamp": 1760911069,
+            "icon": "fas fa-comments",
+            "color": "success"
+        },
+        {
+            "id": 21,
+            "type": "chat",
+            "title": "AI Chat Session",
+            "description": "Discussed: 10,000,000",
+            "timestamp": 1760911038,
+            "icon": "fas fa-comments",
+            "color": "success"
+        },
+        {
+            "id": 21,
+            "type": "chat",
+            "title": "AI Chat Session",
+            "description": "Discussed: What business opportunities are available in Musan...",
+            "timestamp": 1760911028,
+            "icon": "fas fa-comments",
+            "color": "success"
+        },
+        {
+            "id": 21,
+            "type": "chat",
+            "title": "AI Chat Session",
+            "description": "Discussed: I love you",
+            "timestamp": 1760911014,
+            "icon": "fas fa-comments",
+            "color": "success"
+        },
+        {
+            "id": 21,
+            "type": "chat",
+            "title": "AI Chat Session",
+            "description": "Discussed: I love gloria",
+            "timestamp": 1760910950,
+            "icon": "fas fa-comments",
+            "color": "success"
+        },
+        {
+            "id": 21,
+            "type": "chat",
+            "title": "AI Chat Session",
+            "description": "Discussed: hello",
+            "timestamp": 1760910942,
+            "icon": "fas fa-comments",
+            "color": "success"
+        },
+        {
+            "id": 21,
+            "type": "chat",
+            "title": "AI Chat Session",
+            "description": "Discussed: full information on Eco-lodges:",
+            "timestamp": 1760910068,
+            "icon": "fas fa-comments",
+            "color": "success"
+        },
+        {
+            "id": 21,
+            "type": "chat",
+            "title": "AI Chat Session",
+            "description": "Discussed: Eco-lodges:",
+            "timestamp": 1760910049,
+            "icon": "fas fa-comments",
+            "color": "success"
+        },
+        {
+            "id": 21,
+            "type": "chat",
+            "title": "AI Chat Session",
+            "description": "Discussed: 10,000,0000",
+            "timestamp": 1760910033,
+            "icon": "fas fa-comments",
+            "color": "success"
+        },
+        {
+            "id": 21,
+            "type": "chat",
+            "title": "AI Chat Session",
+            "description": "Discussed: What business opportunities are available in Musan...",
+            "timestamp": 1760910023,
+            "icon": "fas fa-comments",
+            "color": "success"
+        },
+        {
+            "id": 21,
+            "type": "chat",
+            "title": "AI Chat Session",
             "description": "Discussed: Local Transport:",
             "timestamp": 1760909626,
             "icon": "fas fa-comments",
@@ -130,105 +229,6 @@
             "title": "AI Chat Session",
             "description": "Discussed: between 500,000 and 2,000,000 RWF\"",
             "timestamp": 1760909038,
-            "icon": "fas fa-comments",
-            "color": "success"
-        },
-        {
-            "id": 21,
-            "type": "chat",
-            "title": "AI Chat Session",
-            "description": "Discussed: What business opportunities are available in Musan...",
-            "timestamp": 1760909024,
-            "icon": "fas fa-comments",
-            "color": "success"
-        },
-        {
-            "id": 21,
-            "type": "chat",
-            "title": "AI Chat Session",
-            "description": "Discussed: \"I have 2,000,000 RWF",
-            "timestamp": 1760908876,
-            "icon": "fas fa-comments",
-            "color": "success"
-        },
-        {
-            "id": 21,
-            "type": "chat",
-            "title": "AI Chat Session",
-            "description": "Discussed: I have 2,000,000 RWF",
-            "timestamp": 1760908844,
-            "icon": "fas fa-comments",
-            "color": "success"
-        },
-        {
-            "id": 21,
-            "type": "chat",
-            "title": "AI Chat Session",
-            "description": "Discussed: souvenir shop",
-            "timestamp": 1760908833,
-            "icon": "fas fa-comments",
-            "color": "success"
-        },
-        {
-            "id": 21,
-            "type": "chat",
-            "title": "AI Chat Session",
-            "description": "Discussed: souvenir shop",
-            "timestamp": 1760908806,
-            "icon": "fas fa-comments",
-            "color": "success"
-        },
-        {
-            "id": 21,
-            "type": "chat",
-            "title": "AI Chat Session",
-            "description": "Discussed: Local Transport:",
-            "timestamp": 1760908748,
-            "icon": "fas fa-comments",
-            "color": "success"
-        },
-        {
-            "id": 21,
-            "type": "chat",
-            "title": "AI Chat Session",
-            "description": "Discussed: I have 1,000,000 RWF",
-            "timestamp": 1760908733,
-            "icon": "fas fa-comments",
-            "color": "success"
-        },
-        {
-            "id": 21,
-            "type": "chat",
-            "title": "AI Chat Session",
-            "description": "Discussed: What business opportunities are available in Musan...",
-            "timestamp": 1760908714,
-            "icon": "fas fa-comments",
-            "color": "success"
-        },
-        {
-            "id": 21,
-            "type": "chat",
-            "title": "AI Chat Session",
-            "description": "Discussed: Souvenir Shop:",
-            "timestamp": 1760908676,
-            "icon": "fas fa-comments",
-            "color": "success"
-        },
-        {
-            "id": 21,
-            "type": "chat",
-            "title": "AI Chat Session",
-            "description": "Discussed: between 500,000 and 2,000,000 RWF",
-            "timestamp": 1760908661,
-            "icon": "fas fa-comments",
-            "color": "success"
-        },
-        {
-            "id": 21,
-            "type": "chat",
-            "title": "AI Chat Session",
-            "description": "Discussed: What business opportunities are available in Musan...",
-            "timestamp": 1760908647,
             "icon": "fas fa-comments",
             "color": "success"
         }

@@ -35,6 +35,9 @@ $history = $input['history'] ?? [];
 // Get user's budget range from session (persistent across requests)
 $userBudgetRange = $_SESSION['user_budget_range'] ?? '';
 
+// Get user's selected sector from session (persistent across requests)
+$userSelectedSector = $_SESSION['user_selected_sector'] ?? '';
+
 // Enhanced AI-Powered Chat System Functions
 function getEnhancedAIResponse($message, $history = []) {
     // Use the enhanced chat interface that combines local data with Gemini AI
@@ -1222,6 +1225,13 @@ function clearUserBudget() {
     unset($_SESSION['user_budget_range']);
 }
 
+// Function to clear user selected sector (for testing or reset)
+function clearUserSelectedSector() {
+    global $userSelectedSector;
+    $userSelectedSector = '';
+    unset($_SESSION['user_selected_sector']);
+}
+
 // NLP Intent Classification
 function classifyUserIntent($message) {
     $message_lower = strtolower($message);
@@ -1353,10 +1363,23 @@ try {
     );
     
     if ($isStructuredFlowQuery) {
-        // For structured conversation flow queries, use AI-powered responses that ask for budget first
-        $ai_response = generateContextualResponse($message, $user_intent, $history);
-        $response = $ai_response;
+        // For structured conversation flow queries, ask for sector selection first
+        $response = "Great! I'd love to help you explore business opportunities in Musanze, Rwanda! 🚀
+
+**First, let me know which business sector interests you most:**
+
+🏔️ **Tourism & Hospitality** - Eco-lodges, mountain tours, cultural experiences
+🌱 **Agriculture** - Coffee processing, organic farming, food processing  
+🚗 **Services** - Local transport, souvenir shops, internet cafes
+🏪 **Retail** - Traditional crafts, gift shops, local products
+
+**Please select a sector** (e.g., \"tourism\", \"agriculture\", \"services\", or \"retail\") and I'll show you the best business opportunities in that sector that match your investment capacity!";
     } elseif ($isSectorSelection) {
+        // Save selected sector to session
+        global $userSelectedSector;
+        $userSelectedSector = $message;
+        $_SESSION['user_selected_sector'] = $message;
+        
         // For sector selection, check if user has provided budget first
         $hasBudget = checkIfUserHasProvidedBudget($history);
         if (!$hasBudget) {
@@ -1391,8 +1414,17 @@ try {
         // Check if this is a budget response first
         $isBudgetResponse = isBudgetResponse($message);
         if ($isBudgetResponse) {
-            // User provided budget, show budget-specific business opportunities
-            $response = generateBudgetSpecificResponse($message, $message);
+            // User provided budget, check if they have a selected sector
+            global $userSelectedSector;
+            if (!empty($userSelectedSector)) {
+                // Show sector-specific business opportunities with budget filtering
+                $sectorResponse = generateSectorBusinessOpportunities($userSelectedSector);
+                $response = $sectorResponse . "\n\n**📄 Export Options:**\n[PDF Export] [Word Export] [Excel Export]\n\n" .
+                           "**Which specific business opportunity interests you most?** I'll provide detailed analysis for your selection.";
+            } else {
+                // No sector selected, show general budget-specific business opportunities
+                $response = generateBudgetSpecificResponse($message, $message);
+            }
         } else {
             // Check if this is an irrelevant query
             $isIrrelevantQuery = isIrrelevantQuery($message);

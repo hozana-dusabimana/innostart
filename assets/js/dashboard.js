@@ -2098,3 +2098,593 @@ function logout() {
         window.dashboard.logout();
     }
 }
+
+// Financial Projections Functions
+let financialProjectionsData = null;
+
+function generateFinancialProjections() {
+    // Get form data
+    const businessName = document.getElementById('fpBusinessName').value;
+    const businessType = document.getElementById('fpBusinessType').value;
+    const projectionPeriod = parseInt(document.getElementById('projectionPeriod').value);
+    const initialInvestment = parseFloat(document.getElementById('initialInvestment').value) || 0;
+    const monthlyRevenue = parseFloat(document.getElementById('monthlyRevenue').value) || 0;
+    const monthlyExpenses = parseFloat(document.getElementById('monthlyExpenses').value) || 0;
+    const growthRate = parseFloat(document.getElementById('growthRate').value) || 10;
+    const taxRate = parseFloat(document.getElementById('taxRate').value) || 15;
+    const inflationRate = parseFloat(document.getElementById('inflationRate').value) || 5;
+    const discountRate = parseFloat(document.getElementById('discountRate').value) || 12;
+    const breakEvenMonths = parseInt(document.getElementById('breakEvenMonths').value) || 12;
+
+    // Validate inputs
+    if (!businessName || !businessType) {
+        alert('Please fill in business name and type');
+        return;
+    }
+
+    if (monthlyRevenue <= 0 || monthlyExpenses <= 0) {
+        alert('Please enter valid revenue and expense amounts');
+        return;
+    }
+
+    // Show loading state
+    showFinancialLoading();
+
+    // Calculate projections
+    setTimeout(() => {
+        const projections = calculateFinancialProjections({
+            businessName,
+            businessType,
+            projectionPeriod,
+            initialInvestment,
+            monthlyRevenue,
+            monthlyExpenses,
+            growthRate,
+            taxRate,
+            inflationRate,
+            discountRate,
+            breakEvenMonths
+        });
+
+        financialProjectionsData = projections;
+        displayFinancialProjections(projections);
+        hideFinancialLoading();
+    }, 1000);
+}
+
+function calculateFinancialProjections(params) {
+    const {
+        businessName,
+        businessType,
+        projectionPeriod,
+        initialInvestment,
+        monthlyRevenue,
+        monthlyExpenses,
+        growthRate,
+        taxRate,
+        inflationRate,
+        discountRate,
+        breakEvenMonths
+    } = params;
+
+    const months = projectionPeriod * 12;
+    const projections = [];
+    let cumulativeProfit = -initialInvestment;
+    let totalRevenue = 0;
+    let totalExpenses = 0;
+
+    for (let month = 1; month <= months; month++) {
+        // Calculate growth-adjusted revenue and expenses
+        const growthFactor = Math.pow(1 + growthRate / 100, (month - 1) / 12);
+        const inflationFactor = Math.pow(1 + inflationRate / 100, (month - 1) / 12);
+
+        const currentRevenue = monthlyRevenue * growthFactor * inflationFactor;
+        const currentExpenses = monthlyExpenses * inflationFactor;
+
+        // Calculate profit before tax
+        const grossProfit = currentRevenue - currentExpenses;
+
+        // Calculate tax
+        const tax = Math.max(0, grossProfit * (taxRate / 100));
+
+        // Calculate net profit
+        const netProfit = grossProfit - tax;
+
+        // Update cumulative values
+        cumulativeProfit += netProfit;
+        totalRevenue += currentRevenue;
+        totalExpenses += currentExpenses;
+
+        projections.push({
+            month: month,
+            monthName: getMonthName(month),
+            revenue: currentRevenue,
+            expenses: currentExpenses,
+            grossProfit: grossProfit,
+            tax: tax,
+            netProfit: netProfit,
+            cumulativeProfit: cumulativeProfit
+        });
+    }
+
+    // Calculate summary metrics
+    const totalNetProfit = totalRevenue - totalExpenses - (totalRevenue * taxRate / 100);
+    const profitMargin = totalRevenue > 0 ? ((totalNetProfit / totalRevenue) * 100) : 0;
+
+    return {
+        businessName,
+        businessType,
+        summary: {
+            totalRevenue,
+            totalExpenses,
+            totalNetProfit,
+            profitMargin,
+            initialInvestment,
+            finalCumulativeProfit: cumulativeProfit
+        },
+        projections,
+        parameters: params
+    };
+}
+
+function getMonthName(monthNumber) {
+    const monthNames = [
+        'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+        'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+    ];
+
+    const year = Math.floor((monthNumber - 1) / 12) + 1;
+    const month = ((monthNumber - 1) % 12) + 1;
+
+    return `${monthNames[month - 1]} Y${year}`;
+}
+
+function displayFinancialProjections(data) {
+    // Show results section first
+    const resultsDiv = document.getElementById('projectionResults');
+    resultsDiv.style.display = 'block';
+
+    // Wait a moment for the DOM to update, then update summary cards
+    setTimeout(() => {
+        const totalRevenueEl = document.getElementById('totalRevenue');
+        const totalExpensesEl = document.getElementById('totalExpenses');
+        const netProfitEl = document.getElementById('netProfit');
+        const profitMarginEl = document.getElementById('profitMargin');
+
+        if (totalRevenueEl) totalRevenueEl.textContent = formatCurrency(data.summary.totalRevenue);
+        if (totalExpensesEl) totalExpensesEl.textContent = formatCurrency(data.summary.totalExpenses);
+        if (netProfitEl) netProfitEl.textContent = formatCurrency(data.summary.totalNetProfit);
+        if (profitMarginEl) profitMarginEl.textContent = data.summary.profitMargin.toFixed(1) + '%';
+
+        // Add color coding to profit values
+        if (netProfitEl && profitMarginEl) {
+            if (data.summary.totalNetProfit >= 0) {
+                netProfitEl.className = 'metric-positive';
+                profitMarginEl.className = 'metric-positive';
+            } else {
+                netProfitEl.className = 'metric-negative';
+                profitMarginEl.className = 'metric-negative';
+            }
+        }
+
+        // Populate projections table
+        populateProjectionsTable(data.projections);
+
+        // Create charts
+        createFinancialCharts(data);
+
+        // Scroll to results
+        resultsDiv.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+        });
+    }, 100); // Small delay to ensure DOM is updated
+}
+
+function populateProjectionsTable(projections) {
+    const tbody = document.getElementById('projectionsTableBody');
+    tbody.innerHTML = '';
+
+    projections.forEach(projection => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td>${projection.monthName}</td>
+            <td>${formatCurrency(projection.revenue)}</td>
+            <td>${formatCurrency(projection.expenses)}</td>
+            <td class="${projection.grossProfit >= 0 ? 'metric-positive' : 'metric-negative'}">${formatCurrency(projection.grossProfit)}</td>
+            <td>${formatCurrency(projection.tax)}</td>
+            <td class="${projection.netProfit >= 0 ? 'metric-positive' : 'metric-negative'}">${formatCurrency(projection.netProfit)}</td>
+            <td class="${projection.cumulativeProfit >= 0 ? 'metric-positive' : 'metric-negative'}">${formatCurrency(projection.cumulativeProfit)}</td>
+        `;
+        tbody.appendChild(row);
+    });
+}
+
+function createFinancialCharts(data) {
+    // Revenue vs Expenses Chart
+    createRevenueExpensesChart(data.projections);
+
+    // Profit Distribution Chart
+    createProfitChart(data.summary);
+}
+
+function createRevenueExpensesChart(projections) {
+    // Check if Chart.js is available
+    if (typeof Chart === 'undefined') {
+        console.error('Chart.js library is not loaded');
+        return;
+    }
+
+    const canvas = document.getElementById('revenueExpensesChart');
+    if (!canvas) {
+        console.error('Revenue expenses chart canvas not found');
+        return;
+    }
+    const ctx = canvas.getContext('2d');
+
+    // Destroy existing chart if it exists and has destroy method
+    if (window.revenueExpensesChart && typeof window.revenueExpensesChart.destroy === 'function') {
+        window.revenueExpensesChart.destroy();
+    }
+
+    const labels = projections.map(p => p.monthName);
+    const revenueData = projections.map(p => p.revenue);
+    const expensesData = projections.map(p => p.expenses);
+    const profitData = projections.map(p => p.netProfit);
+
+    try {
+        window.revenueExpensesChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [
+                    {
+                        label: 'Revenue',
+                        data: revenueData,
+                        borderColor: '#28a745',
+                        backgroundColor: 'rgba(40, 167, 69, 0.1)',
+                        borderWidth: 3,
+                        fill: false,
+                        tension: 0.4
+                    },
+                    {
+                        label: 'Expenses',
+                        data: expensesData,
+                        borderColor: '#dc3545',
+                        backgroundColor: 'rgba(220, 53, 69, 0.1)',
+                        borderWidth: 3,
+                        fill: false,
+                        tension: 0.4
+                    },
+                    {
+                        label: 'Net Profit',
+                        data: profitData,
+                        borderColor: '#007bff',
+                        backgroundColor: 'rgba(0, 123, 255, 0.1)',
+                        borderWidth: 3,
+                        fill: false,
+                        tension: 0.4
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    },
+                    title: {
+                        display: true,
+                        text: 'Monthly Financial Performance'
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            callback: function (value) {
+                                return formatCurrency(value);
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    } catch (error) {
+        console.error('Error creating revenue expenses chart:', error);
+    }
+}
+
+function createProfitChart(summary) {
+    // Check if Chart.js is available
+    if (typeof Chart === 'undefined') {
+        console.error('Chart.js library is not loaded');
+        return;
+    }
+
+    const canvas = document.getElementById('profitChart');
+    if (!canvas) {
+        console.error('Profit chart canvas not found');
+        return;
+    }
+    const ctx = canvas.getContext('2d');
+
+    // Destroy existing chart if it exists and has destroy method
+    if (window.profitChart && typeof window.profitChart.destroy === 'function') {
+        window.profitChart.destroy();
+    }
+
+    const profitData = [
+        summary.totalNetProfit,
+        summary.totalExpenses
+    ];
+
+    try {
+        window.profitChart = new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Net Profit', 'Total Expenses'],
+                datasets: [{
+                    data: profitData,
+                    backgroundColor: [
+                        '#28a745',
+                        '#dc3545'
+                    ],
+                    borderWidth: 2,
+                    borderColor: '#ffffff'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                    },
+                    title: {
+                        display: true,
+                        text: 'Profit vs Expenses Distribution'
+                    }
+                }
+            }
+        });
+    } catch (error) {
+        console.error('Error creating profit chart:', error);
+    }
+}
+
+function formatCurrency(amount) {
+    if (amount >= 1000000) {
+        return (amount / 1000000).toFixed(1) + 'M RWF';
+    } else if (amount >= 1000) {
+        return (amount / 1000).toFixed(1) + 'K RWF';
+    } else {
+        return Math.round(amount).toLocaleString() + ' RWF';
+    }
+}
+
+function showFinancialLoading() {
+    const resultsDiv = document.getElementById('projectionResults');
+
+    // Show loading overlay instead of replacing content
+    const loadingOverlay = document.createElement('div');
+    loadingOverlay.id = 'financialLoadingOverlay';
+    loadingOverlay.style.cssText = `
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(255, 255, 255, 0.9);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+    `;
+    loadingOverlay.innerHTML = `
+        <div class="financial-loading">
+            <div class="spinner"></div>
+            <p style="margin-top: 15px; font-weight: 600;">Generating financial projections...</p>
+        </div>
+    `;
+
+    resultsDiv.style.position = 'relative';
+    resultsDiv.style.display = 'block';
+    resultsDiv.appendChild(loadingOverlay);
+}
+
+function hideFinancialLoading() {
+    const loadingOverlay = document.getElementById('financialLoadingOverlay');
+    if (loadingOverlay) {
+        loadingOverlay.remove();
+    }
+}
+
+function exportFinancialProjections(format) {
+    if (!financialProjectionsData) {
+        alert('Please generate financial projections first');
+        return;
+    }
+
+    const button = event.target.closest('button');
+    const originalText = button.innerHTML;
+
+    // Show loading state
+    button.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Exporting...';
+    button.disabled = true;
+
+    setTimeout(() => {
+        try {
+            switch (format) {
+                case 'pdf':
+                    exportToPDF(financialProjectionsData);
+                    break;
+                case 'excel':
+                    exportToExcel(financialProjectionsData);
+                    break;
+                case 'csv':
+                    exportToCSV(financialProjectionsData);
+                    break;
+                case 'json':
+                    exportToJSON(financialProjectionsData);
+                    break;
+                default:
+                    throw new Error('Unsupported format');
+            }
+
+            // Show success message
+            showNotification('Financial projections exported successfully!', 'success');
+        } catch (error) {
+            console.error('Export error:', error);
+            showNotification('Export failed. Please try again.', 'error');
+        } finally {
+            // Restore button state
+            button.innerHTML = originalText;
+            button.disabled = false;
+        }
+    }, 1500);
+}
+
+function exportToPDF(data) {
+    // Create a simple PDF-like export using window.print
+    const printWindow = window.open('', '_blank');
+    const htmlContent = generatePDFContent(data);
+
+    printWindow.document.write(htmlContent);
+    printWindow.document.close();
+    printWindow.print();
+}
+
+function exportToExcel(data) {
+    // Create CSV content that can be opened in Excel
+    const csvContent = generateCSVContent(data);
+    downloadFile(csvContent, `${data.businessName}_financial_projections.csv`, 'text/csv');
+}
+
+function exportToCSV(data) {
+    const csvContent = generateCSVContent(data);
+    downloadFile(csvContent, `${data.businessName}_financial_projections.csv`, 'text/csv');
+}
+
+function exportToJSON(data) {
+    const jsonContent = JSON.stringify(data, null, 2);
+    downloadFile(jsonContent, `${data.businessName}_financial_projections.json`, 'application/json');
+}
+
+function generatePDFContent(data) {
+    return `
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <title>Financial Projections - ${data.businessName}</title>
+            <style>
+                body { font-family: Arial, sans-serif; margin: 20px; }
+                .header { text-align: center; margin-bottom: 30px; }
+                .summary { margin-bottom: 30px; }
+                .summary-item { margin: 10px 0; }
+                table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+                th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+                th { background-color: #f2f2f2; }
+                .positive { color: green; }
+                .negative { color: red; }
+            </style>
+        </head>
+        <body>
+            <div class="header">
+                <h1>Financial Projections</h1>
+                <h2>${data.businessName}</h2>
+                <p>Business Type: ${data.businessType}</p>
+                <p>Generated on: ${new Date().toLocaleDateString()}</p>
+            </div>
+            
+            <div class="summary">
+                <h3>Financial Summary</h3>
+                <div class="summary-item">Total Revenue: ${formatCurrency(data.summary.totalRevenue)}</div>
+                <div class="summary-item">Total Expenses: ${formatCurrency(data.summary.totalExpenses)}</div>
+                <div class="summary-item">Net Profit: <span class="${data.summary.totalNetProfit >= 0 ? 'positive' : 'negative'}">${formatCurrency(data.summary.totalNetProfit)}</span></div>
+                <div class="summary-item">Profit Margin: ${data.summary.profitMargin.toFixed(1)}%</div>
+            </div>
+            
+            <h3>Monthly Projections</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Month</th>
+                        <th>Revenue</th>
+                        <th>Expenses</th>
+                        <th>Gross Profit</th>
+                        <th>Tax</th>
+                        <th>Net Profit</th>
+                        <th>Cumulative Profit</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${data.projections.map(p => `
+                        <tr>
+                            <td>${p.monthName}</td>
+                            <td>${formatCurrency(p.revenue)}</td>
+                            <td>${formatCurrency(p.expenses)}</td>
+                            <td class="${p.grossProfit >= 0 ? 'positive' : 'negative'}">${formatCurrency(p.grossProfit)}</td>
+                            <td>${formatCurrency(p.tax)}</td>
+                            <td class="${p.netProfit >= 0 ? 'positive' : 'negative'}">${formatCurrency(p.netProfit)}</td>
+                            <td class="${p.cumulativeProfit >= 0 ? 'positive' : 'negative'}">${formatCurrency(p.cumulativeProfit)}</td>
+                        </tr>
+                    `).join('')}
+                </tbody>
+            </table>
+        </body>
+        </html>
+    `;
+}
+
+function generateCSVContent(data) {
+    const headers = ['Month', 'Revenue', 'Expenses', 'Gross Profit', 'Tax', 'Net Profit', 'Cumulative Profit'];
+    const rows = data.projections.map(p => [
+        p.monthName,
+        p.revenue,
+        p.expenses,
+        p.grossProfit,
+        p.tax,
+        p.netProfit,
+        p.cumulativeProfit
+    ]);
+
+    const csvContent = [headers, ...rows]
+        .map(row => row.map(cell => `"${cell}"`).join(','))
+        .join('\n');
+
+    return csvContent;
+}
+
+function downloadFile(content, filename, mimeType) {
+    const blob = new Blob([content], { type: mimeType });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = filename;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+}
+
+function showNotification(message, type = 'info') {
+    // Create notification element
+    const notification = document.createElement('div');
+    notification.className = `alert alert-${type === 'error' ? 'danger' : type} alert-dismissible fade show position-fixed`;
+    notification.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 300px;';
+    notification.innerHTML = `
+        ${message}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    `;
+
+    document.body.appendChild(notification);
+
+    // Auto remove after 5 seconds
+    setTimeout(() => {
+        if (notification.parentNode) {
+            notification.parentNode.removeChild(notification);
+        }
+    }, 5000);
+}
