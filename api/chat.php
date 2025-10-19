@@ -17,6 +17,9 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit();
 }
 
+// Start session to persist user data
+session_start();
+
 // Get input data
 $input = json_decode(file_get_contents('php://input'), true);
 
@@ -29,10 +32,57 @@ if (!$input || !isset($input['message'])) {
 $message = trim($input['message']);
 $history = $input['history'] ?? [];
 
-// Global variable to track user's budget range
-$userBudgetRange = '';
+// Get user's budget range from session (persistent across requests)
+$userBudgetRange = $_SESSION['user_budget_range'] ?? '';
 
-// AI-Powered Chat System Functions
+// Enhanced AI-Powered Chat System Functions
+function getEnhancedAIResponse($message, $history = []) {
+    // Use the enhanced chat interface that combines local data with Gemini AI
+    $data = [
+        'message' => $message,
+        'conversation_history' => $history
+    ];
+    
+    // Change to the project root directory to ensure correct paths
+    $original_dir = getcwd();
+    $project_root = dirname(__DIR__);
+    chdir($project_root);
+    
+    // Call Python enhanced chat interface
+    $python_script = 'ml_models/enhanced_chat_cli.py';
+    
+    // Check if Python script exists
+    if (!file_exists($python_script)) {
+        error_log("Python script not found: " . $python_script . " in " . getcwd());
+        chdir($original_dir);
+        return null;
+    }
+    
+    $command = "python " . escapeshellarg($python_script) . " " . escapeshellarg(json_encode($data));
+    
+    $output = shell_exec($command . ' 2>&1');
+    
+    // Restore original directory
+    chdir($original_dir);
+    
+    if ($output) {
+        // Log the output for debugging
+        error_log("Python output: " . $output);
+        
+        $result = json_decode(trim($output), true);
+        if ($result && isset($result['response'])) {
+            return $result;
+        } else {
+            error_log("Failed to parse Python output as JSON: " . $output);
+        }
+    } else {
+        error_log("No output from Python script");
+    }
+    
+    // Fallback to original system if enhanced system fails
+    return null;
+}
+
 function getMusanzeMLResponse($message) {
     $message_lower = strtolower($message);
     
@@ -141,6 +191,7 @@ Please select your budget range or tell me your specific budget amount.";
         strpos($message_lower, '1,000,000 - 3,000,000') !== false) {
         global $userBudgetRange;
         $userBudgetRange = "1,000,000 - 3,000,000 RWF";
+        $_SESSION['user_budget_range'] = $userBudgetRange;
         return generateBudgetSpecificResponse("1,000,000 - 3,000,000 RWF", $message);
     }
     
@@ -149,6 +200,7 @@ Please select your budget range or tell me your specific budget amount.";
         strpos($message_lower, '500,000 - 1,000,000') !== false) {
         global $userBudgetRange;
         $userBudgetRange = "500,000 - 1,000,000 RWF";
+        $_SESSION['user_budget_range'] = $userBudgetRange;
         return generateBudgetSpecificResponse("500,000 - 1,000,000 RWF", $message);
     }
     
@@ -157,6 +209,7 @@ Please select your budget range or tell me your specific budget amount.";
         strpos($message_lower, '3,000,000 - 5,000,000') !== false) {
         global $userBudgetRange;
         $userBudgetRange = "3,000,000 - 5,000,000 RWF";
+        $_SESSION['user_budget_range'] = $userBudgetRange;
         return generateBudgetSpecificResponse("3,000,000 - 5,000,000 RWF", $message);
     }
     
@@ -228,6 +281,11 @@ function getPythonAIResponse($message) {
 // AI Generation Functions - All responses are now dynamically generated
 
 function generateBudgetSpecificResponse($budgetRange, $message) {
+    // Save budget to session for persistence
+    global $userBudgetRange;
+    $userBudgetRange = $budgetRange;
+    $_SESSION['user_budget_range'] = $budgetRange;
+    
     // Try getting specific business types that match the budget range first
     if (strpos($budgetRange, '500,000') !== false || strpos($budgetRange, '500000') !== false) {
         // Small budget - try retail, services, internet cafe
@@ -1089,6 +1147,11 @@ I'm here to help you succeed in your business journey! 🚀";
 }
 
 function checkIfUserHasProvidedBudget($history) {
+    // First check if budget is stored in session
+    if (!empty($_SESSION['user_budget_range'])) {
+        return true;
+    }
+    
     // Check if user has provided budget information in the conversation history
     $budgetKeywords = [
         '500,000', '500000', '1,000,000', '1000000', '3,000,000', '3000000', '5,000,000', '5000000',
@@ -1125,6 +1188,10 @@ function isBudgetResponse($message) {
     
     foreach ($budgetPatterns as $pattern) {
         if (preg_match($pattern, $message_lower)) {
+            // Save budget to session when detected
+            global $userBudgetRange;
+            $userBudgetRange = $message;
+            $_SESSION['user_budget_range'] = $message;
             return true;
         }
     }
@@ -1137,11 +1204,22 @@ function isBudgetResponse($message) {
     
     foreach ($budgetKeywords as $keyword) {
         if (strpos($message_lower, $keyword) !== false) {
+            // Save budget to session when detected
+            global $userBudgetRange;
+            $userBudgetRange = $message;
+            $_SESSION['user_budget_range'] = $message;
             return true;
         }
     }
     
     return false;
+}
+
+// Function to clear user budget (for testing or reset)
+function clearUserBudget() {
+    global $userBudgetRange;
+    $userBudgetRange = '';
+    unset($_SESSION['user_budget_range']);
 }
 
 // NLP Intent Classification
@@ -1185,10 +1263,29 @@ function generateAIResponse($message, $history) {
 }
 
 try {
-    // AI-Powered Chat System - Replace hard-coded responses with intelligent AI
+    // Enhanced AI-Powered Chat System with Gemini AI integration
     $specificResponse = null;
     $mlResponse = null;
     
+    // First, try the enhanced AI system (Gemini + Local data)
+    $enhancedResponse = getEnhancedAIResponse($message, $history);
+    
+    if ($enhancedResponse && isset($enhancedResponse['response'])) {
+        // Use enhanced response
+        $response = $enhancedResponse['response'];
+        $source = $enhancedResponse['source'] ?? 'enhanced_ai';
+        
+        echo json_encode([
+            'response' => $response,
+            'timestamp' => date('Y-m-d H:i:s'),
+            'ml_enhanced' => ($source === 'local_dataset'),
+            'ai_powered' => true,
+            'source' => $source
+        ]);
+        exit();
+    }
+    
+    // Fallback to original system if enhanced system fails
     // Classify user intent using NLP
     $user_intent = classifyUserIntent($message);
     
@@ -1328,9 +1425,19 @@ try {
     
 } catch (Exception $e) {
     http_response_code(500);
+    error_log("Chat API error: " . $e->getMessage());
     echo json_encode([
         'error' => 'Internal server error',
-        'message' => 'An error occurred while processing your request'
+        'message' => 'An error occurred while processing your request',
+        'response' => 'I apologize, but I encountered an error. Please try again.'
+    ]);
+} catch (Error $e) {
+    http_response_code(500);
+    error_log("Chat API fatal error: " . $e->getMessage());
+    echo json_encode([
+        'error' => 'Fatal error',
+        'message' => 'A fatal error occurred',
+        'response' => 'I apologize, but I encountered an error. Please try again.'
     ]);
 }
 ?>

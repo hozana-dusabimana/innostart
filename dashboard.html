@@ -186,19 +186,55 @@
                         <div class="chat-container">
                             <div class="chat-messages" id="chat-messages">
                                 <div class="message assistant">
-                                    <div class="message-avatar">AI</div>
+                                    <div class="message-avatar">🤖</div>
                                     <div class="message-content">
-                                        Hello! I'm your AI business assistant for Musanze, Rwanda.
+                                        <strong>Hello! 👋</strong> I'm your friendly AI business assistant for Musanze,
+                                        Rwanda!<br><br>
 
-                                        I can help you explore business opportunities, startup costs, and planning. What
-                                        would you like to know about?
+                                        I'm here to help you with <strong>everything</strong> related to starting and
+                                        growing your business! 🚀<br><br>
+
+                                        <strong>What I can help you with:</strong><br>
+                                        💼 Business opportunities and ideas<br>
+                                        💰 Startup costs and funding<br>
+                                        📋 Business planning and strategy<br>
+                                        📊 Market research and analysis<br>
+                                        🎯 Marketing and sales advice<br>
+                                        ⚖️ Legal and regulatory guidance<br>
+                                        📈 Growth and scaling strategies<br><br>
+
+                                        <em>Just ask me anything - I'm here to help you succeed! 🌟</em>
                                     </div>
                                 </div>
                             </div>
                             <div class="chat-input">
+                                <!-- Quick Action Buttons -->
+                                <div class="quick-actions-chat mb-3">
+                                    <button class="btn btn-sm btn-outline-primary me-2 mb-2"
+                                        onclick="sendQuickMessage('What business opportunities are available in Musanze?')">
+                                        💼 Business Ideas
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-success me-2 mb-2"
+                                        onclick="sendQuickMessage('Help me create a business plan')">
+                                        📋 Business Plan
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-info me-2 mb-2"
+                                        onclick="sendQuickMessage('What are the startup costs for different businesses?')">
+                                        💰 Startup Costs
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-warning me-2 mb-2"
+                                        onclick="sendQuickMessage('What legal requirements do I need to know?')">
+                                        ⚖️ Legal Requirements
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-secondary me-2 mb-2"
+                                        onclick="sendQuickMessage('business opportunities with 1,000,000')">
+                                        🎯 Test Budget
+                                    </button>
+                                </div>
+
                                 <div class="input-group">
                                     <input type="text" id="chat-input"
-                                        placeholder="e.g., 'I want to start a tourism business' or 'coffee farming costs'..."
+                                        placeholder="Ask me anything! e.g., 'How do I start a restaurant?', 'What are the legal requirements?', 'Help me with marketing strategy'..."
                                         onkeypress="handleChatKeyPress(event)">
                                     <button class="send-btn" onclick="sendMessage()">
                                         <i class="fas fa-paper-plane"></i>
@@ -488,9 +524,52 @@
                                     </div>
                                 </div>
                             </div>
-                            <button type="submit" class="btn btn-primary w-100">
+                            <button type="submit" class="btn btn-primary w-100 mb-3">
                                 <i class="fas fa-eye me-2"></i>View Business Plan
                             </button>
+
+                            <!-- Export Business Plan Buttons -->
+                            <div class="export-buttons-container">
+                                <h6 class="text-muted mb-3">
+                                    <i class="fas fa-download me-2"></i>Export Business Plan
+                                </h6>
+                                <div class="row g-2">
+                                    <div class="col-6 col-md-3">
+                                        <button type="button" class="btn btn-outline-danger w-100 export-btn"
+                                            onclick="exportBusinessPlanForm('pdf')" title="Export as PDF">
+                                            <i class="fas fa-file-pdf me-1"></i>
+                                            <span class="d-none d-md-inline">PDF</span>
+                                        </button>
+                                    </div>
+                                    <div class="col-6 col-md-3">
+                                        <button type="button" class="btn btn-outline-primary w-100 export-btn"
+                                            onclick="exportBusinessPlanForm('word')" title="Export as Word Document">
+                                            <i class="fas fa-file-word me-1"></i>
+                                            <span class="d-none d-md-inline">Word</span>
+                                        </button>
+                                    </div>
+                                    <div class="col-6 col-md-3">
+                                        <button type="button" class="btn btn-outline-success w-100 export-btn"
+                                            onclick="exportBusinessPlanForm('excel')"
+                                            title="Export as Excel Spreadsheet">
+                                            <i class="fas fa-file-excel me-1"></i>
+                                            <span class="d-none d-md-inline">Excel</span>
+                                        </button>
+                                    </div>
+                                    <div class="col-6 col-md-3">
+                                        <button type="button" class="btn btn-outline-warning w-100 export-btn"
+                                            onclick="exportBusinessPlanForm('powerpoint')"
+                                            title="Export as PowerPoint Presentation">
+                                            <i class="fas fa-file-powerpoint me-1"></i>
+                                            <span class="d-none d-md-inline">PPT</span>
+                                        </button>
+                                    </div>
+                                </div>
+                                <small class="text-muted mt-2 d-block">
+                                    <i class="fas fa-info-circle me-1"></i>Fill out the form above first, then click any
+                                    export button
+                                </small>
+                            </div>
                         </form>
                     </div>
                 </div>

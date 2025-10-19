@@ -179,7 +179,8 @@ class Dashboard {
             this.showTypingIndicator();
 
             try {
-                // Call the API for real responses
+                // Call the enhanced chat API (now with Gemini AI integration)
+                console.log('Sending message to API:', message);
                 const response = await fetch('api/chat.php', {
                     method: 'POST',
                     headers: {
@@ -191,11 +192,15 @@ class Dashboard {
                     })
                 });
 
+                console.log('API response status:', response.status);
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
 
                 const data = await response.json();
+                console.log('API response data:', data);
+                console.log('Response source:', data.source);
+                console.log('ML enhanced:', data.ml_enhanced);
 
                 // Hide typing indicator
                 this.hideTypingIndicator();
@@ -205,6 +210,13 @@ class Dashboard {
                     // Add AI response
                     this.addMessage(data.response, 'assistant');
                     this.chatHistory.push({ role: 'assistant', content: data.response });
+
+                    // Log if we got dataset response
+                    if (data.source === 'local_dataset' || data.ml_enhanced) {
+                        console.log('✅ Successfully received dataset response!');
+                    } else {
+                        console.log('⚠️ Received non-dataset response from:', data.source);
+                    }
 
                     // Add activity to dashboard
                     this.addActivity('chat', 'AI Chat Session', `Discussed: ${message.substring(0, 50)}${message.length > 50 ? '...' : ''}`);
@@ -216,10 +228,18 @@ class Dashboard {
                 console.error('Chat API error:', error);
                 this.hideTypingIndicator();
 
-                // Fallback to local response
-                const response = this.generateAIResponse(message);
-                this.addMessage(response, 'assistant');
-                this.chatHistory.push({ role: 'assistant', content: response });
+                // Enhanced fallback - try to get response from enhanced system
+                try {
+                    const fallbackResponse = await this.getEnhancedFallbackResponse(message);
+                    this.addMessage(fallbackResponse, 'assistant');
+                    this.chatHistory.push({ role: 'assistant', content: fallbackResponse });
+                } catch (fallbackError) {
+                    console.error('Fallback error:', fallbackError);
+                    // Final fallback to basic response
+                    const response = this.generateAIResponse(message);
+                    this.addMessage(response, 'assistant');
+                    this.chatHistory.push({ role: 'assistant', content: response });
+                }
 
                 // Add activity to dashboard
                 this.addActivity('chat', 'AI Chat Session', `Discussed: ${message.substring(0, 50)}${message.length > 50 ? '...' : ''}`);
@@ -314,6 +334,21 @@ class Dashboard {
             formatted = this.addExportButtons(formatted, content);
         }
 
+        // Also add export buttons for detailed business information
+        if (content.includes('DETAILED BUSINESS INFORMATION:') && content.includes('Export Options:')) {
+            formatted = this.addExportButtons(formatted, content);
+        }
+
+        // Force add export buttons for any detailed business information
+        if (content.includes('DETAILED BUSINESS INFORMATION:') && !formatted.includes('Export Business Plan')) {
+            formatted = this.addExportButtons(formatted, content);
+        }
+
+        // Additional check - if we have export text but no buttons, force add them
+        if (formatted.includes('💼 **Export Options:**') && !formatted.includes('Export Business Plan')) {
+            formatted = this.addExportButtons(formatted, content);
+        }
+
         // Add quick export buttons for any business response
         if (content.includes('Business in Musanze') && content.includes('Financial Projections')) {
             formatted = this.addQuickExportButtons(formatted, content);
@@ -333,32 +368,119 @@ class Dashboard {
             'Local Guide Services', 'Organic Farming', 'Guesthouse', 'Internet Cafe'
         ];
 
+        // Check for business type in different formats
         for (const type of businessTypes) {
-            if (content.includes(type + ' Business in Musanze')) {
+            if (content.includes(type + ' Business in Musanze') ||
+                content.includes('DETAILED BUSINESS INFORMATION: ' + type.toUpperCase()) ||
+                content.includes(type.toUpperCase())) {
                 businessType = type;
                 break;
             }
         }
 
-        // Replace export text with actual buttons
+        console.log('Adding export buttons for business type:', businessType);
+        console.log('Formatted content before replacement:', formatted);
+
+        // Replace export text with well-designed buttons
         const exportButtonsHtml = `
-            <div style="margin: 15px 0; padding: 15px; background: #f8f9fa; border-radius: 8px; border-left: 4px solid #3498db;">
-                <h4 style="margin: 0 0 10px 0; color: #2c3e50;">💼 Export Business Plan</h4>
-                <div style="display: flex; flex-wrap: wrap; gap: 8px;">
-                    <button onclick="exportBusinessPlan('${businessType}', 'pdf')" style="background: #e74c3c; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; font-size: 14px;">📄 PDF</button>
-                    <button onclick="exportBusinessPlan('${businessType}', 'word')" style="background: #3498db; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; font-size: 14px;">📝 Word</button>
-                    <button onclick="exportBusinessPlan('${businessType}', 'excel')" style="background: #27ae60; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; font-size: 14px;">📊 Excel</button>
-                    <button onclick="exportBusinessPlan('${businessType}', 'powerpoint')" style="background: #f39c12; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; font-size: 14px;">📽️ PowerPoint</button>
+            <div style="margin: 20px 0; padding: 20px; background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); border: 1px solid #dee2e6; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
+                <h4 style="margin: 0 0 15px 0; color: #495057; font-weight: 600; text-align: center;">
+                    <i class="fas fa-download" style="margin-right: 8px; color: #6c757d;"></i>Export Business Plan
+                </h4>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 12px; margin-bottom: 15px;">
+                    <button onclick="exportBusinessPlanFromChat('${businessType}', 'pdf')" 
+                            style="background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%); color: white; border: none; padding: 12px 8px; border-radius: 8px; cursor: pointer; font-size: 14px; font-weight: 600; transition: all 0.3s ease; box-shadow: 0 2px 4px rgba(231, 76, 60, 0.3);"
+                            onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 12px rgba(231, 76, 60, 0.4)'"
+                            onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 4px rgba(231, 76, 60, 0.3)'">
+                        <i class="fas fa-file-pdf" style="display: block; font-size: 18px; margin-bottom: 4px;"></i>
+                        <span>PDF</span>
+                    </button>
+                    <button onclick="exportBusinessPlanFromChat('${businessType}', 'word')" 
+                            style="background: linear-gradient(135deg, #3498db 0%, #2980b9 100%); color: white; border: none; padding: 12px 8px; border-radius: 8px; cursor: pointer; font-size: 14px; font-weight: 600; transition: all 0.3s ease; box-shadow: 0 2px 4px rgba(52, 152, 219, 0.3);"
+                            onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 12px rgba(52, 152, 219, 0.4)'"
+                            onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 4px rgba(52, 152, 219, 0.3)'">
+                        <i class="fas fa-file-word" style="display: block; font-size: 18px; margin-bottom: 4px;"></i>
+                        <span>Word</span>
+                    </button>
+                    <button onclick="exportBusinessPlanFromChat('${businessType}', 'excel')" 
+                            style="background: linear-gradient(135deg, #27ae60 0%, #229954 100%); color: white; border: none; padding: 12px 8px; border-radius: 8px; cursor: pointer; font-size: 14px; font-weight: 600; transition: all 0.3s ease; box-shadow: 0 2px 4px rgba(39, 174, 96, 0.3);"
+                            onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 12px rgba(39, 174, 96, 0.4)'"
+                            onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 4px rgba(39, 174, 96, 0.3)'">
+                        <i class="fas fa-file-excel" style="display: block; font-size: 18px; margin-bottom: 4px;"></i>
+                        <span>Excel</span>
+                    </button>
+                    <button onclick="exportBusinessPlanFromChat('${businessType}', 'powerpoint')" 
+                            style="background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%); color: white; border: none; padding: 12px 8px; border-radius: 8px; cursor: pointer; font-size: 14px; font-weight: 600; transition: all 0.3s ease; box-shadow: 0 2px 4px rgba(243, 156, 18, 0.3);"
+                            onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 12px rgba(243, 156, 18, 0.4)'"
+                            onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 4px rgba(243, 156, 18, 0.3)'">
+                        <i class="fas fa-file-powerpoint" style="display: block; font-size: 18px; margin-bottom: 4px;"></i>
+                        <span>PPT</span>
+                    </button>
                 </div>
-                <p style="margin: 10px 0 0 0; font-size: 12px; color: #7f8c8d;">Click any button to generate and download your business plan</p>
+                <p style="margin: 0; font-size: 12px; color: #6c757d; text-align: center;">
+                    <i class="fas fa-info-circle" style="margin-right: 4px;"></i>Click any button to generate and download your business plan
+                </p>
             </div>`;
 
-        // Replace the export options text with buttons
-        formatted = formatted.replace(
+        // Replace the export options text with buttons - try multiple patterns
+        const patterns = [
+            // Pattern 1: Exact match with <br> tags
             /💼 \*\*Export Options:\*\* PDF, Word, Excel, PowerPoint formats available<br>📄 \*\*PDF Export:\*\* Click to generate PDF business plan<br>📝 \*\*Word Export:\*\* Click to generate Word document<br>📊 \*\*Excel Export:\*\* Click to generate Excel spreadsheet<br>📽️ \*\*PowerPoint Export:\*\* Click to generate presentation/g,
-            exportButtonsHtml
-        );
 
+            // Pattern 2: With additional text
+            /💼 \*\*Export Options:\*\* PDF, Word, Excel, PowerPoint formats available<br>📄 \*\*PDF Export:\*\* Click to generate PDF business plan<br>📝 \*\*Word Export:\*\* Click to generate Word document<br>📊 \*\*Excel Export:\*\* Click to generate Excel spreadsheet<br>📽️ \*\*PowerPoint Export:\*\* Click to generate presentation<br><br>💡 \*\*Need help with business planning, funding, or legal requirements\? I can provide detailed guidance for each step!\*\*/g,
+
+            // Pattern 3: More flexible pattern
+            /💼 \*\*Export Options:\*\* PDF, Word, Excel, PowerPoint formats available.*?💡 \*\*Need help with business planning, funding, or legal requirements\? I can provide detailed guidance for each step!\*\*/gs,
+
+            // Pattern 4: Even more flexible - just look for export options
+            /💼 \*\*Export Options:\*\* PDF, Word, Excel, PowerPoint formats available.*?(?=💡|$)/gs
+        ];
+
+        let replaced = false;
+        console.log('Trying patterns...');
+        for (let i = 0; i < patterns.length; i++) {
+            const pattern = patterns[i];
+            console.log(`Pattern ${i + 1}:`, pattern);
+            if (pattern.test(formatted)) {
+                console.log(`Pattern ${i + 1} matched!`);
+                formatted = formatted.replace(pattern, exportButtonsHtml);
+                replaced = true;
+                break;
+            }
+        }
+        console.log('Pattern replacement result:', replaced);
+
+        // If no pattern matched, try a simple replacement approach
+        if (!replaced && formatted.includes('💼 **Export Options:**')) {
+            // Find the start and end of the export section
+            const startIndex = formatted.indexOf('💼 **Export Options:**');
+            const endIndex = formatted.indexOf('💡 **Need help with business planning');
+
+            if (startIndex !== -1 && endIndex !== -1) {
+                const beforeExport = formatted.substring(0, startIndex);
+                const afterExport = formatted.substring(endIndex);
+                formatted = beforeExport + exportButtonsHtml + afterExport;
+            }
+        }
+
+        // If still no replacement happened, try to replace the export text directly
+        if (!replaced && !formatted.includes('Export Business Plan')) {
+            console.log('Trying direct text replacement...');
+            // Try to find and replace the export text section
+            const exportTextPattern = /💼 \*\*Export Options:\*\* PDF, Word, Excel, PowerPoint formats available.*?💡 \*\*Need help with business planning, funding, or legal requirements\? I can provide detailed guidance for each step!\*\*/gs;
+
+            if (exportTextPattern.test(formatted)) {
+                console.log('Direct text pattern matched!');
+                formatted = formatted.replace(exportTextPattern, exportButtonsHtml);
+            } else {
+                console.log('No pattern matched, appending buttons at the end');
+                // If no pattern matches, just append the buttons at the end
+                formatted += exportButtonsHtml;
+            }
+        }
+
+        console.log('Final formatted content:', formatted);
         return formatted;
     }
 
@@ -420,6 +542,33 @@ class Dashboard {
         if (typingIndicator) {
             typingIndicator.remove();
         }
+    }
+
+    async getEnhancedFallbackResponse(message) {
+        // Try to get response from enhanced system using direct Python call
+        try {
+            const response = await fetch('api/enhanced_chat.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    message: message,
+                    history: this.chatHistory
+                })
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                if (data && data.response) {
+                    return data.response;
+                }
+            }
+        } catch (error) {
+            console.error('Enhanced fallback error:', error);
+        }
+
+        throw new Error('Enhanced fallback failed');
     }
 
     generateAIResponse(userMessage) {
@@ -1727,6 +1876,165 @@ async function exportBusinessPlan(businessType, format) {
     }
 }
 
+// Export function for business plan from chat
+async function exportBusinessPlanFromChat(businessType, format) {
+    try {
+        if (window.dashboard) {
+            window.dashboard.showNotification(`Generating ${format.toUpperCase()} business plan for ${businessType}...`, 'info');
+        }
+
+        // Call the export API with business type
+        const response = await fetch('api/export-business-plan.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                business_type: businessType,
+                format: format,
+                business_data: {
+                    businessName: businessType,
+                    targetMarket: 'Local Market',
+                    missionStatement: `Professional ${businessType} services in Musanze, Rwanda`,
+                    competitiveAdvantage: 'Local expertise and quality service',
+                    fundingNeeds: 'To be determined based on business requirements'
+                }
+            })
+        });
+
+        if (response.ok) {
+            const result = await response.json();
+
+            if (result.success) {
+                let blob, filename, mimeType;
+
+                if (format === 'excel') {
+                    // Handle CSV data for Excel
+                    blob = new Blob([result.csv], { type: 'text/csv;charset=utf-8;' });
+                    filename = `${businessType}_Business_Plan.csv`;
+                    mimeType = 'text/csv';
+                } else {
+                    // Handle HTML data for PDF, Word, PowerPoint
+                    blob = new Blob([result.html], { type: 'text/html;charset=utf-8;' });
+                    filename = `${businessType}_Business_Plan.html`;
+                    mimeType = 'text/html';
+                }
+
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = filename;
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(url);
+                document.body.removeChild(a);
+
+                if (window.dashboard) {
+                    window.dashboard.showNotification(`✅ ${format.toUpperCase()} business plan for ${businessType} downloaded successfully!`, 'success');
+                }
+            } else {
+                throw new Error(result.error || 'Failed to generate business plan');
+            }
+        } else {
+            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
+
+    } catch (error) {
+        console.error('Export error:', error);
+        if (window.dashboard) {
+            window.dashboard.showNotification(`Error generating ${format.toUpperCase()} business plan. Please try again.`, 'error');
+        }
+    }
+}
+
+// Enhanced export function for business plan form
+async function exportBusinessPlanForm(format) {
+    try {
+        // Get form data
+        const formData = {
+            businessName: document.getElementById('businessName').value,
+            businessType: document.getElementById('businessType').value,
+            targetMarket: document.getElementById('targetMarket').value,
+            missionStatement: document.getElementById('missionStatement').value,
+            competitiveAdvantage: document.getElementById('competitiveAdvantage').value,
+            fundingNeeds: document.getElementById('fundingNeeds').value
+        };
+
+        // Validate form data
+        if (!formData.businessName || !formData.businessType) {
+            if (window.dashboard) {
+                window.dashboard.showNotification('Please fill in the business name and type first!', 'warning');
+            }
+            return;
+        }
+
+        // Show loading state
+        const exportButtons = document.querySelectorAll('.export-btn');
+        exportButtons.forEach(btn => btn.disabled = true);
+
+        if (window.dashboard) {
+            window.dashboard.showNotification(`Generating ${format.toUpperCase()} business plan...`, 'info');
+        }
+
+        // Call the export API
+        const response = await fetch('api/export-business-plan.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                ...formData,
+                format: format
+            })
+        });
+
+        if (response.ok) {
+            const result = await response.json();
+
+            if (result.success) {
+                let blob, filename;
+
+                if (format === 'excel') {
+                    // Handle CSV data for Excel
+                    blob = new Blob([result.csv], { type: 'text/csv;charset=utf-8;' });
+                    filename = `${formData.businessName}_Business_Plan.csv`;
+                } else {
+                    // Handle HTML data for PDF, Word, PowerPoint
+                    blob = new Blob([result.html], { type: 'text/html;charset=utf-8;' });
+                    filename = `${formData.businessName}_Business_Plan.html`;
+                }
+
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = filename;
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(url);
+                document.body.removeChild(a);
+
+                if (window.dashboard) {
+                    window.dashboard.showNotification(`✅ ${format.toUpperCase()} business plan downloaded successfully!`, 'success');
+                }
+            } else {
+                throw new Error(result.error || 'Failed to generate business plan');
+            }
+        } else {
+            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
+
+    } catch (error) {
+        console.error('Export error:', error);
+        if (window.dashboard) {
+            window.dashboard.showNotification(`Error generating ${format.toUpperCase()} business plan. Please try again.`, 'error');
+        }
+    } finally {
+        // Re-enable export buttons
+        const exportButtons = document.querySelectorAll('.export-btn');
+        exportButtons.forEach(btn => btn.disabled = false);
+    }
+}
+
 // Close export modal
 function closeExportModal() {
     const modal = document.getElementById('exportModal');
@@ -1772,6 +2080,15 @@ function loadQuickTemplate(templateType) {
 
 function handleChatKeyPress(event) {
     if (event.key === 'Enter') {
+        sendMessage();
+    }
+}
+
+// Quick message function for chat buttons
+function sendQuickMessage(message) {
+    const chatInput = document.getElementById('chat-input');
+    if (chatInput) {
+        chatInput.value = message;
         sendMessage();
     }
 }

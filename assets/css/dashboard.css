@@ -1058,6 +1058,30 @@ button.excel-btn,
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1) !important;
 }
 
+/* Quick Actions Chat Buttons */
+.quick-actions-chat {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 10px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.quick-actions-chat .btn {
+    font-size: 12px;
+    padding: 6px 12px;
+    border-radius: 20px;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+}
+
+.quick-actions-chat .btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
 /* Loading State for Export Buttons */
 .export-btn.loading {
     pointer-events: none;
@@ -1076,8 +1100,13 @@ button.excel-btn,
 }
 
 @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
 }
 
 /* Pulse Animation for Export Buttons */
@@ -1086,9 +1115,17 @@ button.excel-btn,
 }
 
 @keyframes pulse {
-    0% { box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15); }
-    50% { box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15), 0 0 0 10px rgba(255, 255, 255, 0.1); }
-    100% { box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15); }
+    0% {
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+    }
+
+    50% {
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15), 0 0 0 10px rgba(255, 255, 255, 0.1);
+    }
+
+    100% {
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+    }
 }
 
 /* Responsive Design */
@@ -1099,9 +1136,96 @@ button.excel-btn,
         font-size: 13px;
         margin: 4px;
     }
-    
+
     .export-buttons-container {
         padding: 15px;
         gap: 10px;
+    }
+}
+
+/* Enhanced Export Business Plan Buttons */
+.export-buttons-container {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border: 1px solid #dee2e6;
+    border-radius: 12px;
+    padding: 20px;
+    margin-top: 15px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.export-buttons-container h6 {
+    color: #495057;
+    font-weight: 600;
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+.export-btn {
+    border: 2px solid;
+    border-radius: 8px;
+    padding: 12px 8px;
+    font-weight: 600;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.export-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s;
+}
+
+.export-btn:hover::before {
+    left: 100%;
+}
+
+.export-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.export-btn.btn-outline-danger:hover {
+    background-color: #dc3545;
+    border-color: #dc3545;
+    color: white;
+}
+
+.export-btn.btn-outline-primary:hover {
+    background-color: #0d6efd;
+    border-color: #0d6efd;
+    color: white;
+}
+
+.export-btn.btn-outline-success:hover {
+    background-color: #198754;
+    border-color: #198754;
+    color: white;
+}
+
+.export-btn.btn-outline-warning:hover {
+    background-color: #ffc107;
+    border-color: #ffc107;
+    color: #000;
+}
+
+.export-btn i {
+    font-size: 16px;
+}
+
+@media (max-width: 768px) {
+    .export-btn {
+        padding: 10px 6px;
+        font-size: 12px;
+    }
+
+    .export-btn i {
+        font-size: 14px;
     }
 }

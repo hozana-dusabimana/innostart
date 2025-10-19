@@ -4,20 +4,21 @@ InnoStart is a comprehensive startup assistant platform that helps entrepreneurs
 
 ## 🚀 Features
 
-- **AI-Powered Chat Assistant** - Get personalized business advice and guidance
+- **Enhanced AI-Powered Chat Assistant** - Get personalized business advice using both local datasets and Google Gemini AI
 - **Business Plan Generator** - Create comprehensive business plans with financial projections
 - **Market Research Tools** - Access market data and analysis for Musanze region
 - **Resource Library** - Templates, guides, and frameworks for entrepreneurs
 - **Analytics Dashboard** - Track your business progress and metrics
 - **User Management** - Secure registration and authentication system
 - **Export Functionality** - Export business plans in multiple formats (PDF, Word, Excel, PowerPoint)
+- **Friendly Chat Interface** - Quick action buttons and comprehensive support for all business questions
 
 ## 🛠️ Technology Stack
 
 - **Frontend**: HTML5, CSS3, JavaScript (ES6+), Bootstrap 5
 - **Backend**: PHP 7.4+ with RESTful APIs
 - **Database**: MySQL 5.7+ with comprehensive data structure
-- **AI/ML**: Python 3.8+ with scikit-learn, OpenAI integration
+- **AI/ML**: Python 3.8+ with scikit-learn, OpenAI integration, Google Gemini AI
 - **Server**: XAMPP/WAMP compatible, Apache/Nginx ready
 
 ## 📋 Prerequisites
@@ -65,7 +66,7 @@ Before setting up InnoStart, ensure you have the following installed:
 #### Option A: Automated Setup (Recommended)
 ```cmd
 cd C:\xampp\htdocs\innostart
-python setup_python.py
+python install_gemini.py
 ```
 
 #### Option B: Manual Setup
