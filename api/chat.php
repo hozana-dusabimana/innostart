@@ -362,6 +362,13 @@ function generateBudgetCategoriesResponse($message) {
 }
 
 function generateSpecificBusinessResponse($message) {
+    // Get user's budget constraint from session
+    $userBudget = $_SESSION['user_budget_range'] ?? '';
+    $budgetContext = '';
+    if (!empty($userBudget)) {
+        $budgetContext = " with a budget constraint of " . $userBudget;
+    }
+    
     // Get ML model data from datasets - NO HARD-CODED DATA
     $mlResponse = getMusanzeMLResponse($message);
     if ($mlResponse) {
@@ -369,8 +376,8 @@ function generateSpecificBusinessResponse($message) {
                "Would you like me to generate a complete business plan for this opportunity?";
     }
     
-    // Get AI response from Python ML model with dataset training
-    $aiResponse = getPythonAIResponse($message . " business opportunity detailed analysis from dataset");
+    // Get AI response from Python ML model with dataset training and budget constraint
+    $aiResponse = getPythonAIResponse($message . " business opportunity detailed analysis from dataset" . $budgetContext);
     
     if ($aiResponse) {
         return $aiResponse . "\n\n**📄 Export Options:**\n[PDF Export] [Word Export] [Excel Export]\n\n" .
@@ -378,7 +385,7 @@ function generateSpecificBusinessResponse($message) {
     }
     
     // Final fallback - no hard-coded data
-    return "I'm analyzing your business request using our trained ML models and datasets. Let me generate comprehensive business information for " . $message . " in Musanze, Rwanda.\n\n" .
+    return "I'm analyzing your business request using our trained ML models and datasets. Let me generate comprehensive business information for " . $message . " in Musanze, Rwanda" . $budgetContext . ".\n\n" .
            "**📄 Export Options:**\n[PDF Export] [Word Export] [Excel Export]\n\n" .
            "Would you like me to generate a complete business plan for this opportunity?";
 }
@@ -716,13 +723,20 @@ function generateSectorBusinessOpportunities($sector) {
 }
 
 function generateSpecificBusinessDetails($businessType) {
+    // Get user's budget constraint from session
+    $userBudget = $_SESSION['user_budget_range'] ?? '';
+    $budgetContext = '';
+    if (!empty($userBudget)) {
+        $budgetContext = " with a budget constraint of " . $userBudget;
+    }
+    
     // Get ML model data for the specific business type
     $mlResponse = getMusanzeMLResponse($businessType);
     if ($mlResponse) {
         // Try to find the exact business match first
         $exactBusiness = findExactBusinessMatch($mlResponse, $businessType);
         if ($exactBusiness) {
-            return generateComprehensiveBusinessDetails($exactBusiness, $businessType);
+            return generateComprehensiveBusinessDetails($exactBusiness, $businessType, $userBudget);
         }
         
         // If no exact match, extract the first business opportunity
@@ -730,12 +744,12 @@ function generateSpecificBusinessDetails($businessType) {
         if ($specificBusiness) {
             // Update the business name to match what the user requested
             $specificBusiness['name'] = ucwords($businessType);
-            return generateComprehensiveBusinessDetails($specificBusiness, $businessType);
+            return generateComprehensiveBusinessDetails($specificBusiness, $businessType, $userBudget);
         }
     }
     
-    // Try AI-generated response from Python with dataset training
-    $aiResponse = getPythonAIResponse($businessType . " business opportunity detailed analysis from dataset");
+    // Try AI-generated response from Python with dataset training and budget constraint
+    $aiResponse = getPythonAIResponse($businessType . " business opportunity detailed analysis from dataset" . $budgetContext);
     if ($aiResponse) {
         return $aiResponse;
     }
@@ -870,7 +884,7 @@ function generateSectorOpportunitiesList($businesses, $sector) {
     return $response;
 }
 
-function generateComprehensiveBusinessDetails($business, $businessType) {
+function generateComprehensiveBusinessDetails($business, $businessType, $userBudget = '') {
     $businessName = $business['name'];
     $location = $business['location'];
     $startupCost = $business['startupCost'];
@@ -880,12 +894,20 @@ function generateComprehensiveBusinessDetails($business, $businessType) {
     $demand = $business['demand'];
     $competition = $business['competition'];
     
-    // Check if business is within reasonable budget range and add warning if needed
+    // Adjust startup cost based on user's budget constraint
+    if (!empty($userBudget)) {
+        $startupCost = adjustStartupCostForBudget($startupCost, $userBudget);
+    }
+    
+    // Check if business is within user's budget range and add warning if needed
     $budgetWarning = "";
-    if (!empty($startupCost)) {
+    if (!empty($startupCost) && !empty($userBudget)) {
         $cost = (int)str_replace(',', '', $startupCost);
-        if ($cost > 5000000) {
-            $budgetWarning = "\n⚠️ **Budget Note:** This business requires " . $startupCost . " which may exceed some budget ranges. Consider this when planning your investment.\n\n";
+        $budgetRange = extractBudgetRange($userBudget);
+        if ($cost > $budgetRange['max']) {
+            $budgetWarning = "\n⚠️ **Budget Alert:** This business requires " . $startupCost . " which exceeds your budget of " . $userBudget . ". Consider scaling down or finding alternative funding.\n\n";
+        } else {
+            $budgetWarning = "\n✅ **Budget Compatible:** This business fits within your budget of " . $userBudget . ".\n\n";
         }
     }
     
@@ -1471,5 +1493,54 @@ try {
         'message' => 'A fatal error occurred',
         'response' => 'I apologize, but I encountered an error. Please try again.'
     ]);
+}
+
+// Helper function to adjust startup cost based on user's budget
+function adjustStartupCostForBudget($originalCost, $userBudget) {
+    // Extract budget range
+    $budgetRange = extractBudgetRange($userBudget);
+    if (!$budgetRange) {
+        return $originalCost;
+    }
+    
+    // Convert original cost to number
+    $originalCostNum = (int)str_replace(',', '', $originalCost);
+    
+    // If original cost is within budget, return as is
+    if ($originalCostNum <= $budgetRange['max']) {
+        return $originalCost;
+    }
+    
+    // If original cost exceeds budget, scale it down to fit within budget
+    $scaledCost = min($originalCostNum, $budgetRange['max']);
+    
+    // Format the scaled cost
+    if ($scaledCost >= 1000000) {
+        return number_format($scaledCost / 1000000, 1) . 'M RWF';
+    } else {
+        return number_format($scaledCost) . ' RWF';
+    }
+}
+
+// Helper function to extract budget range from user budget string
+function extractBudgetRange($userBudget) {
+    // Handle different budget formats
+    if (preg_match('/(\d+(?:,\d{3})*)\s*-\s*(\d+(?:,\d{3})*)\s*RWF/i', $userBudget, $matches)) {
+        return [
+            'min' => (int)str_replace(',', '', $matches[1]),
+            'max' => (int)str_replace(',', '', $matches[2])
+        ];
+    }
+    
+    // Handle single budget amount
+    if (preg_match('/(\d+(?:,\d{3})*)\s*RWF/i', $userBudget, $matches)) {
+        $amount = (int)str_replace(',', '', $matches[1]);
+        return [
+            'min' => $amount * 0.8, // 80% of stated amount
+            'max' => $amount * 1.2  // 120% of stated amount
+        ];
+    }
+    
+    return null;
 }
 ?>
