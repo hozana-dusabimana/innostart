@@ -105,3 +105,6 @@ The dashboard chat now has:
 5. Test with various business-related queries
 
 If you still see unrelated responses, check the browser console for error messages to identify the specific issue.
+
+
+

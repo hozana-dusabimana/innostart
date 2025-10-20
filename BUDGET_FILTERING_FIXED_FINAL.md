@@ -109,3 +109,6 @@ When you search for businesses with 1,000,000 RWF, you'll get:
 - Proper routing based on your query type
 
 **Your budget filtering is now working exactly as expected!** 🎉
+
+
+

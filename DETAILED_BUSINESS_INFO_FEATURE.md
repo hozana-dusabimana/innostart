@@ -142,3 +142,6 @@ Local transport services in Musanze provide essential mobility. Focus on safety,
 **Users can now get comprehensive, detailed information about any specific business from your Musanze dataset!** 
 
 This provides everything they need to make informed decisions about starting a business, including financial analysis, startup requirements, success factors, and a complete action plan! 🎉
+
+
+

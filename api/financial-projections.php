@@ -11,7 +11,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 }
 
 // Include database configuration
-require_once '../config/database.php';
+require_once __DIR__ . '/../config/database.php';
 
 class FinancialProjectionsAPI {
     private $db;
@@ -223,28 +223,58 @@ class FinancialProjectionsAPI {
                 return;
             }
             
-            $stmt = $this->db->prepare("
-                INSERT INTO financial_projections 
-                (user_id, business_name, business_type, projection_data, created_at, updated_at) 
-                VALUES (?, ?, ?, ?, NOW(), NOW())
-            ");
+            // Save to both financial_projections table and user_saved_data table
+            $projectionId = $this->saveToFinancialProjections($userId, $projectionData);
+            $savedDataId = $this->saveToUserData($userId, $projectionData);
             
-            $projectionJson = json_encode($projectionData);
-            $stmt->bind_param("isss", $userId, $projectionData['businessName'], $projectionData['businessType'], $projectionJson);
-            
-            if ($stmt->execute()) {
-                $projectionId = $this->db->insert_id;
-                $this->sendResponse([
-                    'success' => true,
-                    'projectionId' => $projectionId,
-                    'message' => 'Projection saved successfully'
-                ]);
-            } else {
-                $this->sendResponse(['error' => 'Failed to save projection'], 500);
-            }
+            $this->sendResponse([
+                'success' => true,
+                'projectionId' => $projectionId,
+                'savedDataId' => $savedDataId,
+                'message' => 'Projection saved successfully'
+            ]);
             
         } catch (Exception $e) {
             $this->sendResponse(['error' => 'Save failed: ' . $e->getMessage()], 500);
+        }
+    }
+    
+    private function saveToFinancialProjections($userId, $projectionData) {
+        $stmt = $this->db->prepare("
+            INSERT INTO financial_projections 
+            (user_id, business_name, business_type, projection_data, created_at, updated_at) 
+            VALUES (?, ?, ?, ?, NOW(), NOW())
+        ");
+        
+        $projectionJson = json_encode($projectionData);
+        $stmt->bind_param("isss", $userId, $projectionData['businessName'], $projectionData['businessType'], $projectionJson);
+        
+        if ($stmt->execute()) {
+            return $this->db->insert_id;
+        } else {
+            throw new Exception('Failed to save to financial_projections table');
+        }
+    }
+    
+    private function saveToUserData($userId, $projectionData) {
+        $title = $projectionData['businessName'] . ' - Financial Projections';
+        $description = 'Financial projections for ' . $projectionData['businessType'] . ' business';
+        $tags = ['financial', 'projections', $projectionData['businessType']];
+        
+        $stmt = $this->db->prepare("
+            INSERT INTO user_saved_data 
+            (user_id, data_type, title, description, data_content, tags, status) 
+            VALUES (?, 'financial_projection', ?, ?, ?, ?, 'completed')
+        ");
+        
+        $dataContentJson = json_encode($projectionData);
+        $tagsJson = json_encode($tags);
+        $stmt->bind_param("issss", $userId, $title, $description, $dataContentJson, $tagsJson);
+        
+        if ($stmt->execute()) {
+            return $this->db->insert_id;
+        } else {
+            throw new Exception('Failed to save to user_saved_data table');
         }
     }
     

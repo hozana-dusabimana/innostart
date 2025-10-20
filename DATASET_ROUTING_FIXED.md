@@ -97,3 +97,6 @@ Which of these interests you most? I can provide detailed startup guidance!"
 **The dashboard chat now properly uses your Musanze dataset for business queries!** 
 
 No more generic friendly responses - you get specific business opportunities with exact startup costs, locations, and revenue potential from your local dataset! 🎉
+
+
+

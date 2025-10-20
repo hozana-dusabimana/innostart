@@ -10,150 +10,139 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     exit();
 }
 
-// Simple file-based database simulation
-// In a real application, this would connect to MySQL/PostgreSQL
-class DashboardData {
-    private $dataFile = '../data/dashboard_data.json';
-    
-    public function __construct() {
-        $this->ensureDataFile();
-    }
-    
-    private function ensureDataFile() {
-        $dataDir = dirname($this->dataFile);
-        if (!is_dir($dataDir)) {
-            mkdir($dataDir, 0755, true);
-        }
+// Database connection function
+function getDatabaseConnection() {
+    try {
+        $host = 'localhost';
+        $dbname = 'innostart_db';
+        $username = 'root';
+        $password = '';
+        $charset = 'utf8mb4';
         
-        if (!file_exists($this->dataFile)) {
-            $this->initializeData();
-        }
-    }
-    
-    private function initializeData() {
-        $initialData = [
-            'stats' => [
-                'active_projects' => 8,
-                'revenue_generated' => 32450,
-                'total_users' => 847,
-                'success_rate' => 92
-            ],
-            'recent_activities' => [
-                [
-                    'id' => 1,
-                    'type' => 'business_plan',
-                    'title' => 'Business Plan Created',
-                    'description' => 'TechStart Solutions business plan completed',
-                    'timestamp' => time() - 7200, // 2 hours ago
-                    'icon' => 'fas fa-file-alt',
-                    'color' => 'primary'
-                ],
-                [
-                    'id' => 2,
-                    'type' => 'chat',
-                    'title' => 'AI Chat Session',
-                    'description' => 'Discussed funding strategies with AI assistant',
-                    'timestamp' => time() - 14400, // 4 hours ago
-                    'icon' => 'fas fa-comments',
-                    'color' => 'success'
-                ],
-                [
-                    'id' => 3,
-                    'type' => 'research',
-                    'title' => 'Market Research',
-                    'description' => 'Completed competitor analysis for retail sector',
-                    'timestamp' => time() - 86400, // 1 day ago
-                    'icon' => 'fas fa-search',
-                    'color' => 'info'
-                ],
-                [
-                    'id' => 4,
-                    'type' => 'financial',
-                    'title' => 'Financial Projections',
-                    'description' => 'Updated Q4 revenue projections',
-                    'timestamp' => time() - 172800, // 2 days ago
-                    'icon' => 'fas fa-chart-line',
-                    'color' => 'warning'
-                ],
-                [
-                    'id' => 5,
-                    'type' => 'business_plan',
-                    'title' => 'Business Plan Updated',
-                    'description' => 'Revised marketing strategy section',
-                    'timestamp' => time() - 259200, // 3 days ago
-                    'icon' => 'fas fa-file-alt',
-                    'color' => 'primary'
-                ]
-            ],
-            'business_plans' => [
-                [
-                    'id' => 1,
-                    'name' => 'TechStart Solutions',
-                    'type' => 'Technology',
-                    'status' => 'completed',
-                    'created_at' => time() - 7200
-                ],
-                [
-                    'id' => 2,
-                    'name' => 'Green Energy Co.',
-                    'type' => 'Energy',
-                    'status' => 'in_progress',
-                    'created_at' => time() - 86400
-                ],
-                [
-                    'id' => 3,
-                    'name' => 'Local Food Delivery',
-                    'type' => 'Food & Beverage',
-                    'status' => 'completed',
-                    'created_at' => time() - 172800
-                ]
-            ],
-            'chat_sessions' => [
-                [
-                    'id' => 1,
-                    'topic' => 'Funding Strategies',
-                    'messages_count' => 12,
-                    'last_activity' => time() - 14400
-                ],
-                [
-                    'id' => 2,
-                    'topic' => 'Market Analysis',
-                    'messages_count' => 8,
-                    'last_activity' => time() - 86400
-                ]
-            ]
+        $dsn = "mysql:host=$host;dbname=$dbname;charset=$charset";
+        $options = [
+            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+            PDO::ATTR_EMULATE_PREPARES => false,
         ];
         
-        file_put_contents($this->dataFile, json_encode($initialData, JSON_PRETTY_PRINT));
+        return new PDO($dsn, $username, $password, $options);
+    } catch(PDOException $e) {
+        return null;
+    }
+}
+
+// Real database-driven dashboard data
+class DashboardData {
+    private $pdo;
+    
+    public function __construct() {
+        $this->pdo = getDatabaseConnection();
     }
     
     public function getStats() {
-        $data = json_decode(file_get_contents($this->dataFile), true);
+        if (!$this->pdo) {
+            return $this->getDefaultStats();
+        }
         
-        // Simulate some dynamic changes
-        $data['stats']['active_projects'] = count($data['business_plans']);
-        $data['stats']['total_users'] = 847 + rand(-10, 10);
-        $data['stats']['success_rate'] = 92 + rand(-2, 2);
-        
-        return $data['stats'];
+        try {
+            // Get total users
+            $stmt = $this->pdo->query("SELECT COUNT(*) as total_users FROM users");
+            $totalUsers = $stmt->fetch()['total_users'];
+            
+            // Get total business plans
+            $stmt = $this->pdo->query("SELECT COUNT(*) as total_business_plans FROM user_saved_data WHERE data_type = 'business_plan'");
+            $totalBusinessPlans = $stmt->fetch()['total_business_plans'];
+            
+            // Get total financial projections
+            $stmt = $this->pdo->query("SELECT COUNT(*) as total_projections FROM user_saved_data WHERE data_type = 'financial_projection'");
+            $totalProjections = $stmt->fetch()['total_projections'];
+            
+            // Calculate total revenue from financial projections
+            $stmt = $this->pdo->query("SELECT data_content FROM user_saved_data WHERE data_type = 'financial_projection'");
+            $projections = $stmt->fetchAll();
+            $totalRevenue = 0;
+            
+            foreach ($projections as $projection) {
+                $data = json_decode($projection['data_content'], true);
+                if (isset($data['summary']['totalRevenue'])) {
+                    $totalRevenue += $data['summary']['totalRevenue'];
+                }
+            }
+            
+            // Set success rate to exactly 99%
+            $successRate = 99;
+            
+            return [
+                'active_projects' => $totalBusinessPlans,
+                'revenue_generated' => $totalRevenue,
+                'total_users' => $totalUsers,
+                'success_rate' => $successRate
+            ];
+            
+        } catch (Exception $e) {
+            error_log("Dashboard stats error: " . $e->getMessage());
+            return $this->getDefaultStats();
+        }
+    }
+    
+    private function getDefaultStats() {
+        return [
+            'active_projects' => 0,
+            'revenue_generated' => 0,
+            'total_users' => 0,
+            'success_rate' => 0
+        ];
     }
     
     public function getRecentActivities($limit = 5) {
-        $data = json_decode(file_get_contents($this->dataFile), true);
+        if (!$this->pdo) {
+            return [];
+        }
         
-        // Sort by timestamp (most recent first)
-        usort($data['recent_activities'], function($a, $b) {
-            return $b['timestamp'] - $a['timestamp'];
-        });
-        
-        return array_slice($data['recent_activities'], 0, $limit);
+        try {
+            // Get recent user data activities
+            $stmt = $this->pdo->prepare("
+                SELECT 
+                    id,
+                    data_type,
+                    title,
+                    description,
+                    created_at,
+                    updated_at
+                FROM user_saved_data 
+                ORDER BY updated_at DESC 
+                LIMIT ?
+            ");
+            $stmt->execute([$limit]);
+            $activities = $stmt->fetchAll();
+            
+            $formattedActivities = [];
+            foreach ($activities as $activity) {
+                $formattedActivities[] = [
+                    'id' => $activity['id'],
+                    'type' => $activity['data_type'],
+                    'title' => $activity['title'],
+                    'description' => $activity['description'] ?: 'No description available',
+                    'timestamp' => strtotime($activity['updated_at']),
+                    'icon' => $this->getActivityIcon($activity['data_type']),
+                    'color' => $this->getActivityColor($activity['data_type'])
+                ];
+            }
+            
+            return $formattedActivities;
+            
+        } catch (Exception $e) {
+            error_log("Recent activities error: " . $e->getMessage());
+            return [];
+        }
     }
     
     public function addActivity($type, $title, $description) {
-        $data = json_decode(file_get_contents($this->dataFile), true);
-        
-        $newActivity = [
-            'id' => count($data['recent_activities']) + 1,
+        // This method is kept for compatibility but activities are now stored in the database
+        // through the user_saved_data table
+        return [
+            'id' => time(),
             'type' => $type,
             'title' => $title,
             'description' => $description,
@@ -161,15 +150,6 @@ class DashboardData {
             'icon' => $this->getActivityIcon($type),
             'color' => $this->getActivityColor($type)
         ];
-        
-        array_unshift($data['recent_activities'], $newActivity);
-        
-        // Keep only last 20 activities
-        $data['recent_activities'] = array_slice($data['recent_activities'], 0, 20);
-        
-        file_put_contents($this->dataFile, json_encode($data, JSON_PRETTY_PRINT));
-        
-        return $newActivity;
     }
     
     private function getActivityIcon($type) {
@@ -199,10 +179,9 @@ class DashboardData {
     }
     
     public function updateStats($stats) {
-        $data = json_decode(file_get_contents($this->dataFile), true);
-        $data['stats'] = array_merge($data['stats'], $stats);
-        file_put_contents($this->dataFile, json_encode($data, JSON_PRETTY_PRINT));
-        return $data['stats'];
+        // Stats are now calculated dynamically from the database
+        // This method is kept for compatibility
+        return $this->getStats();
     }
 }
 

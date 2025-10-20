@@ -249,6 +249,85 @@ CREATE TABLE IF NOT EXISTS financial_projections (
     INDEX idx_created_at (created_at)
 );
 
+-- User saved data table (for general data storage)
+CREATE TABLE IF NOT EXISTS user_saved_data (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    data_type ENUM('financial_projection', 'business_plan', 'market_analysis', 'competitor_analysis', 'marketing_strategy', 'custom') NOT NULL,
+    title VARCHAR(255) NOT NULL,
+    description TEXT,
+    data_content JSON NOT NULL,
+    tags JSON,
+    is_favorite BOOLEAN DEFAULT FALSE,
+    is_public BOOLEAN DEFAULT FALSE,
+    status ENUM('draft', 'completed', 'archived') DEFAULT 'draft',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    INDEX idx_user_id (user_id),
+    INDEX idx_data_type (data_type),
+    INDEX idx_status (status),
+    INDEX idx_is_favorite (is_favorite),
+    INDEX idx_created_at (created_at)
+);
+
+-- User data history table (for tracking changes)
+CREATE TABLE IF NOT EXISTS user_data_history (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    data_id INT NOT NULL,
+    data_type ENUM('financial_projection', 'business_plan', 'market_analysis', 'competitor_analysis', 'marketing_strategy', 'custom') NOT NULL,
+    action ENUM('created', 'updated', 'deleted', 'archived', 'restored') NOT NULL,
+    old_data JSON,
+    new_data JSON,
+    change_summary TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    INDEX idx_user_id (user_id),
+    INDEX idx_data_id (data_id),
+    INDEX idx_data_type (data_type),
+    INDEX idx_action (action),
+    INDEX idx_created_at (created_at)
+);
+
+-- User data templates table (for reusable templates)
+CREATE TABLE IF NOT EXISTS user_data_templates (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    template_name VARCHAR(255) NOT NULL,
+    template_type ENUM('financial_projection', 'business_plan', 'market_analysis', 'competitor_analysis', 'marketing_strategy', 'custom') NOT NULL,
+    template_data JSON NOT NULL,
+    is_public BOOLEAN DEFAULT FALSE,
+    usage_count INT DEFAULT 0,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    INDEX idx_user_id (user_id),
+    INDEX idx_template_type (template_type),
+    INDEX idx_is_public (is_public),
+    INDEX idx_usage_count (usage_count)
+);
+
+-- User data exports table (for tracking exports)
+CREATE TABLE IF NOT EXISTS user_data_exports (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    data_id INT NOT NULL,
+    data_type ENUM('financial_projection', 'business_plan', 'market_analysis', 'competitor_analysis', 'marketing_strategy', 'custom') NOT NULL,
+    export_format ENUM('pdf', 'excel', 'csv', 'json', 'word') NOT NULL,
+    file_name VARCHAR(255) NOT NULL,
+    file_path VARCHAR(500),
+    file_size INT,
+    export_status ENUM('pending', 'completed', 'failed') DEFAULT 'pending',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    INDEX idx_user_id (user_id),
+    INDEX idx_data_id (data_id),
+    INDEX idx_export_format (export_format),
+    INDEX idx_export_status (export_status),
+    INDEX idx_created_at (created_at)
+);
+
 -- Create indexes for better performance
 CREATE INDEX idx_users_created_at ON users(created_at);
 CREATE INDEX idx_business_plans_created_at ON business_plans(created_at);

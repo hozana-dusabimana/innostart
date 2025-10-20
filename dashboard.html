@@ -58,6 +58,12 @@
                 </a>
             </div>
             <div class="nav-item">
+                <a href="#" class="nav-link" data-section="my-data">
+                    <i class="fas fa-database"></i>
+                    My Data
+                </a>
+            </div>
+            <div class="nav-item">
                 <a href="#" class="nav-link" data-section="settings">
                     <i class="fas fa-cog"></i>
                     Settings
@@ -534,9 +540,19 @@
                                     </div>
                                 </div>
                             </div>
-                            <button type="submit" class="btn btn-primary w-100 mb-3">
-                                <i class="fas fa-eye me-2"></i>View Business Plan
-                            </button>
+                            <div class="text-center mb-4">
+                                <button type="submit" class="btn btn-primary btn-lg">
+                                    <i class="fas fa-eye me-2"></i>View Business Plan
+                                </button>
+                                <button type="button" class="btn btn-success btn-lg ms-2"
+                                    onclick="saveCurrentBusinessPlan()">
+                                    <i class="fas fa-save me-2"></i>Save Business Plan
+                                </button>
+                                <button type="button" class="btn btn-info btn-lg ms-2"
+                                    onclick="loadSavedBusinessPlans()">
+                                    <i class="fas fa-folder-open me-2"></i>Load Saved
+                                </button>
+                            </div>
 
                             <!-- Export Business Plan Buttons -->
                             <div class="export-buttons-container">
@@ -574,10 +590,17 @@
                                             <span class="d-none d-md-inline">PPT</span>
                                         </button>
                                     </div>
+                                    <div class="col-6 col-md-3">
+                                        <button type="button" class="btn btn-outline-info w-100 export-btn"
+                                            onclick="saveCurrentBusinessPlan()" title="Save Business Plan to My Data">
+                                            <i class="fas fa-save me-1"></i>
+                                            <span class="d-none d-md-inline">Save</span>
+                                        </button>
+                                    </div>
                                 </div>
                                 <small class="text-muted mt-2 d-block">
                                     <i class="fas fa-info-circle me-1"></i>Fill out the form above first, then click any
-                                    export button
+                                    export button or save to My Data
                                 </small>
                             </div>
                         </form>
@@ -717,6 +740,14 @@
                                 <button type="button" class="btn btn-primary btn-lg"
                                     onclick="generateFinancialProjections()">
                                     <i class="fas fa-chart-line me-2"></i>Generate Financial Projections
+                                </button>
+                                <button type="button" class="btn btn-success btn-lg ms-2"
+                                    onclick="saveCurrentFinancialProjection()">
+                                    <i class="fas fa-save me-2"></i>Save Projection
+                                </button>
+                                <button type="button" class="btn btn-info btn-lg ms-2"
+                                    onclick="loadSavedFinancialProjections()">
+                                    <i class="fas fa-folder-open me-2"></i>Load Saved
                                 </button>
                             </div>
                         </form>
@@ -868,6 +899,126 @@
                                                 </button>
                                             </div>
                                         </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- My Data Section -->
+            <div id="my-data" class="section">
+                <div class="dashboard-card">
+                    <div class="card-header">
+                        <h5><i class="fas fa-database me-2"></i>My Data Management</h5>
+                    </div>
+                    <div class="card-body">
+                        <!-- Data Management Controls -->
+                        <div class="row mb-4">
+                            <div class="col-md-6">
+                                <div class="input-group">
+                                    <input type="text" class="form-control" id="dataSearchInput"
+                                        placeholder="Search your data...">
+                                    <button class="btn btn-outline-primary" onclick="searchMyData()">
+                                        <i class="fas fa-search"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <select class="form-select" id="dataTypeFilter">
+                                    <option value="">All Types</option>
+                                    <option value="financial_projection">Financial Projections</option>
+                                    <option value="business_plan">Business Plans</option>
+                                    <option value="market_analysis">Market Analysis</option>
+                                    <option value="competitor_analysis">Competitor Analysis</option>
+                                    <option value="marketing_strategy">Marketing Strategy</option>
+                                    <option value="custom">Custom Data</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <select class="form-select" id="dataStatusFilter">
+                                    <option value="">All Status</option>
+                                    <option value="draft">Draft</option>
+                                    <option value="completed">Completed</option>
+                                    <option value="archived">Archived</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Data Statistics -->
+                        <div class="row mb-4">
+                            <div class="col-md-3">
+                                <div class="stat-card">
+                                    <div class="stat-icon" style="background: var(--primary-color);">
+                                        <i class="fas fa-file-alt"></i>
+                                    </div>
+                                    <div class="stat-content">
+                                        <h3 id="totalDataCount">0</h3>
+                                        <p>Total Items</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="stat-card">
+                                    <div class="stat-icon" style="background: var(--success-color);">
+                                        <i class="fas fa-check-circle"></i>
+                                    </div>
+                                    <div class="stat-content">
+                                        <h3 id="completedDataCount">0</h3>
+                                        <p>Completed</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="stat-card">
+                                    <div class="stat-icon" style="background: var(--warning-color);">
+                                        <i class="fas fa-edit"></i>
+                                    </div>
+                                    <div class="stat-content">
+                                        <h3 id="draftDataCount">0</h3>
+                                        <p>Drafts</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="stat-card">
+                                    <div class="stat-icon" style="background: var(--info-color);">
+                                        <i class="fas fa-heart"></i>
+                                    </div>
+                                    <div class="stat-content">
+                                        <h3 id="favoriteDataCount">0</h3>
+                                        <p>Favorites</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Data List -->
+                        <div class="dashboard-card">
+                            <div class="card-header">
+                                <h6><i class="fas fa-list me-2"></i>Your Saved Data</h6>
+                            </div>
+                            <div class="card-body">
+                                <div id="myDataList">
+                                    <div class="text-center py-4">
+                                        <i class="fas fa-spinner fa-spin fa-2x text-muted"></i>
+                                        <p class="text-muted mt-2">Loading your data...</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Data History -->
+                        <div class="dashboard-card">
+                            <div class="card-header">
+                                <h6><i class="fas fa-history me-2"></i>Recent Activity</h6>
+                            </div>
+                            <div class="card-body">
+                                <div id="dataHistoryList">
+                                    <div class="text-center py-4">
+                                        <i class="fas fa-spinner fa-spin fa-2x text-muted"></i>
+                                        <p class="text-muted mt-2">Loading activity history...</p>
                                     </div>
                                 </div>
                             </div>
