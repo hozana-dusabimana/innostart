@@ -1346,7 +1346,7 @@ button.excel-btn,
 
 .financial-input-section .form-label {
     font-weight: 600;
-    color: #495057;
+    color: #2c3e50;
     margin-bottom: 8px;
 }
 
@@ -1615,6 +1615,38 @@ button.excel-btn,
     }
 }
 
+/* General Form Label Styling - Better Visibility - High Specificity */
+.dashboard-card .form-label,
+.card-body .form-label,
+.form-group .form-label,
+.mb-3 .form-label,
+.form-label {
+    font-weight: 600 !important;
+    color: #2c3e50 !important;
+    margin-bottom: 8px !important;
+    font-size: 14px !important;
+    opacity: 1 !important;
+}
+
+/* Business Plan Form Labels - High Specificity */
+#business-plan .form-label,
+#business-plan .mb-3 .form-label,
+#business-plan .form-group .form-label {
+    color: #2c3e50 !important;
+    font-weight: 600 !important;
+    opacity: 1 !important;
+}
+
+/* Financial Projections Form Labels - High Specificity */
+#financial-projections .form-label,
+#financial-projections .mb-3 .form-label,
+#financial-projections .form-group .form-label,
+.financial-input-section .form-label {
+    color: #2c3e50 !important;
+    font-weight: 600 !important;
+    opacity: 1 !important;
+}
+
 /* Dark Mode Support for Financial Projections */
 .dark-mode .financial-input-section {
     background: linear-gradient(135deg, #2c2c2c 0%, #3c3c3c 100%);
@@ -1629,6 +1661,30 @@ button.excel-btn,
 
 .dark-mode .financial-input-section .form-label {
     color: #ffffff;
+}
+
+/* Dark Mode Form Labels - High Specificity */
+.dark-mode .dashboard-card .form-label,
+.dark-mode .card-body .form-label,
+.dark-mode .form-group .form-label,
+.dark-mode .mb-3 .form-label,
+.dark-mode .form-label {
+    color: #ffffff !important;
+    opacity: 1 !important;
+}
+
+.dark-mode #business-plan .form-label,
+.dark-mode #business-plan .mb-3 .form-label,
+.dark-mode #business-plan .form-group .form-label {
+    color: #ffffff !important;
+    opacity: 1 !important;
+}
+
+.dark-mode #financial-projections .form-label,
+.dark-mode #financial-projections .mb-3 .form-label,
+.dark-mode #financial-projections .form-group .form-label {
+    color: #ffffff !important;
+    opacity: 1 !important;
 }
 
 .dark-mode .financial-input-section .form-control,
@@ -1700,4 +1756,215 @@ button.excel-btn,
 
 .dark-mode .financial-loading {
     background: linear-gradient(135deg, #2c2c2c 0%, #3c3c3c 100%);
+}
+
+/* CRITICAL: Force Form Label Visibility - Highest Priority */
+body .form-label,
+html body .form-label,
+.dashboard-card .form-label,
+.card-body .form-label,
+#financial-projections .form-label,
+#financial-projections .mb-3 .form-label,
+#financial-projections .col-md-6 .form-label,
+#financial-projections .col-md-3 .form-label {
+    color: #2c3e50 !important;
+    font-weight: 600 !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    display: block !important;
+    text-shadow: none !important;
+}
+
+/* CRITICAL: Force Dark Mode Form Label Visibility */
+body.dark-mode .form-label,
+html body.dark-mode .form-label,
+.dark-mode .dashboard-card .form-label,
+.dark-mode .card-body .form-label,
+.dark-mode #financial-projections .form-label,
+.dark-mode #financial-projections .mb-3 .form-label,
+.dark-mode #financial-projections .col-md-6 .form-label,
+.dark-mode #financial-projections .col-md-3 .form-label {
+    color: #ffffff !important;
+    font-weight: 600 !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    display: block !important;
+    text-shadow: none !important;
+}
+
+/* ULTRA SPECIFIC: Financial Projections Form Labels - Maximum Override */
+#financial-projections #financialProjectionForm .form-label,
+#financial-projections form .form-label,
+#financial-projections .row .form-label,
+#financial-projections .col-12 .form-label,
+#financial-projections .col-md-6 .form-label,
+#financial-projections .col-md-3 .form-label {
+    color: #2c3e50 !important;
+    font-weight: 700 !important;
+    font-size: 14px !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    display: block !important;
+    text-shadow: none !important;
+    line-height: 1.4 !important;
+}
+
+/* ULTRA SPECIFIC: Dark Mode Financial Projections Form Labels */
+.dark-mode #financial-projections #financialProjectionForm .form-label,
+.dark-mode #financial-projections form .form-label,
+.dark-mode #financial-projections .row .form-label,
+.dark-mode #financial-projections .col-12 .form-label,
+.dark-mode #financial-projections .col-md-6 .form-label,
+.dark-mode #financial-projections .col-md-3 .form-label {
+    color: #ffffff !important;
+    font-weight: 700 !important;
+    font-size: 14px !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    display: block !important;
+    text-shadow: none !important;
+    line-height: 1.4 !important;
+}
+
+/* MY DATA SECTION - Enhanced Label Visibility */
+#my-data .form-label,
+#my-data .form-select,
+#my-data .form-control,
+#my-data .stat-content p,
+#my-data .data-item h6,
+#my-data .data-item .text-muted,
+#my-data .data-item .small {
+    color: #2c3e50 !important;
+    font-weight: 600 !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+/* MY DATA SECTION - Dark Mode */
+.dark-mode #my-data .form-label,
+.dark-mode #my-data .form-select,
+.dark-mode #my-data .form-control,
+.dark-mode #my-data .stat-content p,
+.dark-mode #my-data .data-item h6,
+.dark-mode #my-data .data-item .text-muted,
+.dark-mode #my-data .data-item .small {
+    color: #ffffff !important;
+    font-weight: 600 !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+/* DATA ITEM CARDS - Enhanced Visibility */
+.data-item h6,
+.data-item .text-muted,
+.data-item .small,
+.data-item .badge,
+.data-item .btn {
+    color: #2c3e50 !important;
+    font-weight: 600 !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+/* DATA ITEM CARDS - Dark Mode */
+.dark-mode .data-item h6,
+.dark-mode .data-item .text-muted,
+.dark-mode .data-item .small,
+.dark-mode .data-item .badge,
+.dark-mode .data-item .btn {
+    color: #ffffff !important;
+    font-weight: 600 !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+/* TARGETED: Data Item Text Elements - High Specificity */
+.data-item h6,
+.data-item p,
+.data-item span,
+.data-item div,
+.data-item .text-muted,
+.data-item .small,
+.data-item .btn,
+.data-item a,
+.data-item button {
+    color: #2c3e50 !important;
+    font-weight: 600 !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    text-shadow: none !important;
+}
+
+/* TARGETED: Dark Mode Data Item Text Elements */
+.dark-mode .data-item h6,
+.dark-mode .data-item p,
+.dark-mode .data-item span,
+.dark-mode .data-item div,
+.dark-mode .data-item .text-muted,
+.dark-mode .data-item .small,
+.dark-mode .data-item .btn,
+.dark-mode .data-item a,
+.dark-mode .data-item button {
+    color: #ffffff !important;
+    font-weight: 600 !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    text-shadow: none !important;
+}
+
+/* MAXIMUM SPECIFICITY: My Data Section Text */
+#my-data .data-item h6,
+#my-data .data-item p,
+#my-data .data-item span,
+#my-data .data-item div,
+#my-data .data-item .text-muted,
+#my-data .data-item .small,
+#my-data .data-item .btn,
+#my-data .data-item a,
+#my-data .data-item button {
+    color: #2c3e50 !important;
+    font-weight: 600 !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    text-shadow: none !important;
+}
+
+/* MAXIMUM SPECIFICITY: Dark Mode My Data Section Text */
+.dark-mode #my-data .data-item h6,
+.dark-mode #my-data .data-item p,
+.dark-mode #my-data .data-item span,
+.dark-mode #my-data .data-item div,
+.dark-mode #my-data .data-item .text-muted,
+.dark-mode #my-data .data-item .small,
+.dark-mode #my-data .data-item .btn,
+.dark-mode #my-data .data-item a,
+.dark-mode #my-data .data-item button {
+    color: #ffffff !important;
+    font-weight: 600 !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    text-shadow: none !important;
+}
+
+/* SETTINGS SECTION - Force White Labels */
+#settings .form-label,
+#settings .form-check-label,
+#settings label {
+    color: #ffffff !important;
+    font-weight: 600 !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    text-shadow: none !important;
+}
+
+/* SETTINGS SECTION - Maximum Specificity */
+#settings .mb-3 .form-label,
+#settings .form-check .form-check-label,
+#settings .col-md-6 .form-label,
+#settings .col-md-6 .form-check-label {
+    color: #ffffff !important;
+    font-weight: 600 !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    text-shadow: none !important;
 }

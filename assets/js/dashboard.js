@@ -107,6 +107,8 @@ class Dashboard {
         // Initialize specific sections when shown
         if (sectionId === 'my-data') {
             initMyDataSection();
+        } else if (sectionId === 'settings') {
+            this.loadSettings();
         }
 
         // Update content area class for chat section
@@ -1660,19 +1662,24 @@ class Dashboard {
 
     // Load settings functionality
     loadSettings() {
+        // Load current user data into settings form
+        if (this.currentUser) {
+            const nameInput = document.getElementById('settingsName');
+            const emailInput = document.getElementById('settingsEmail');
+
+            if (nameInput) nameInput.value = this.currentUser.name || '';
+            if (emailInput) emailInput.value = this.currentUser.email || '';
+        }
+
         // Load user settings from localStorage or API
         const savedSettings = localStorage.getItem('innostart_settings');
         if (savedSettings) {
             const settings = JSON.parse(savedSettings);
 
             // Apply saved settings
-            const nameInput = document.querySelector('#settings input[type="text"]');
-            const emailInput = document.querySelector('#settings input[type="email"]');
             const notificationsCheckbox = document.getElementById('notifications');
             const darkModeCheckbox = document.getElementById('darkMode');
 
-            if (nameInput && settings.name) nameInput.value = settings.name;
-            if (emailInput && settings.email) emailInput.value = settings.email;
             if (notificationsCheckbox) notificationsCheckbox.checked = settings.notifications !== false;
             if (darkModeCheckbox) darkModeCheckbox.checked = settings.darkMode === true;
         }
@@ -1693,8 +1700,8 @@ class Dashboard {
     // Save settings functionality
     saveSettings() {
         const settings = {
-            name: document.querySelector('#settings input[type="text"]').value,
-            email: document.querySelector('#settings input[type="email"]').value,
+            name: document.getElementById('settingsName').value,
+            email: document.getElementById('settingsEmail').value,
             notifications: document.getElementById('notifications').checked,
             darkMode: document.getElementById('darkMode').checked
         };
