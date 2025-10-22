@@ -42,7 +42,12 @@ class MusanzeSmartModel:
         """Get businesses filtered by budget range from dataset"""
         try:
             # Try different possible paths for the dataset
+            import os
+            current_dir = os.path.dirname(os.path.abspath(__file__))
             dataset_paths = [
+                os.path.join(current_dir, '../datasets/musanze_dataset.csv'),
+                os.path.join(current_dir, 'datasets/musanze_dataset.csv'),
+                os.path.join(current_dir, './datasets/musanze_dataset.csv'),
                 '../datasets/musanze_dataset.csv',
                 'datasets/musanze_dataset.csv',
                 './datasets/musanze_dataset.csv'
@@ -175,7 +180,12 @@ class MusanzeSmartModel:
         """Get detailed information for a specific business selection"""
         try:
             # Try different possible paths for the dataset
+            import os
+            current_dir = os.path.dirname(os.path.abspath(__file__))
             dataset_paths = [
+                os.path.join(current_dir, '../datasets/musanze_dataset.csv'),
+                os.path.join(current_dir, 'datasets/musanze_dataset.csv'),
+                os.path.join(current_dir, './datasets/musanze_dataset.csv'),
                 '../datasets/musanze_dataset.csv',
                 'datasets/musanze_dataset.csv',
                 './datasets/musanze_dataset.csv'
@@ -192,9 +202,29 @@ class MusanzeSmartModel:
             if df is None:
                 return "Dataset not found. Please ensure the Musanze dataset is available."
             
-            # Filter by business name
+            # Map frontend business names to dataset business names
+            business_name_mapping = {
+                'mountain hiking tours': 'Mountain Hiking Tours',
+                'coffee processing': 'Coffee Processing', 
+                'local restaurant': 'Local Restaurant',
+                'organic farming': 'Organic Farming',
+                'internet cafe': 'Internet Cafe',
+                'eco-lodges': 'Eco-lodges',
+                'eco-lodge': 'Eco-lodges',
+                'souvenir shop': 'Souvenir Shop',
+                'local transport': 'Local Transport',
+                'local guide services': 'Local Guide Services',
+                'volcano trekking': 'Volcano Trekking',
+                'food processing': 'Food Processing',
+                'guesthouse': 'Guesthouse'
+            }
+            
+            # Get the correct business name for the dataset
             business_name_lower = business_name.lower()
-            filtered_df = df[df['business_type'].str.lower() == business_name_lower]
+            dataset_business_name = business_name_mapping.get(business_name_lower, business_name.title())
+            
+            # Filter by business name
+            filtered_df = df[df['business_type'] == dataset_business_name]
             
             if location:
                 # If location is specified, filter by both business name and location
@@ -274,7 +304,12 @@ class MusanzeSmartModel:
         """Get businesses filtered by business type from dataset"""
         try:
             # Try different possible paths for the dataset
+            import os
+            current_dir = os.path.dirname(os.path.abspath(__file__))
             dataset_paths = [
+                os.path.join(current_dir, '../datasets/musanze_dataset.csv'),
+                os.path.join(current_dir, 'datasets/musanze_dataset.csv'),
+                os.path.join(current_dir, './datasets/musanze_dataset.csv'),
                 '../datasets/musanze_dataset.csv',
                 'datasets/musanze_dataset.csv',
                 './datasets/musanze_dataset.csv'
@@ -381,7 +416,12 @@ class MusanzeSmartModel:
         """Get businesses filtered by both business type and budget range from dataset"""
         try:
             # Try different possible paths for the dataset
+            import os
+            current_dir = os.path.dirname(os.path.abspath(__file__))
             dataset_paths = [
+                os.path.join(current_dir, '../datasets/musanze_dataset.csv'),
+                os.path.join(current_dir, 'datasets/musanze_dataset.csv'),
+                os.path.join(current_dir, './datasets/musanze_dataset.csv'),
                 '../datasets/musanze_dataset.csv',
                 'datasets/musanze_dataset.csv',
                 './datasets/musanze_dataset.csv'
@@ -648,8 +688,22 @@ class MusanzeSmartModel:
                 if combined_response:
                     return combined_response
             
-            # If only business type is provided, ask for budget range
+            # If only business type is provided, check if it's a specific business selection
             if business_type_found:
+                # Check if this is a specific business selection (exact business name from dataset)
+                specific_businesses = [
+                    'mountain hiking tours', 'coffee processing', 'local restaurant', 'organic farming', 
+                    'internet cafe', 'eco-lodges', 'eco-lodge', 'souvenir shop', 'local transport', 
+                    'local guide services', 'volcano trekking', 'food processing', 'guesthouse'
+                ]
+                
+                # If it's a specific business selection, get detailed info directly
+                if business_type_found in specific_businesses:
+                    detailed_response = self.get_detailed_business_info(business_type_found)
+                    if detailed_response and "DETAILED BUSINESS INFORMATION" in detailed_response:
+                        return detailed_response
+                
+                # Otherwise, ask for budget range (general business type query)
                 business_response = self.get_businesses_by_type(business_type_found)
                 if business_response:
                     return business_response

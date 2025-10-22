@@ -10,8 +10,11 @@ def main():
     user_message = sys.argv[1]
     
     # Load trained model
+    import os
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    dataset_path = os.path.join(current_dir, '../datasets/musanze_dataset.csv')
     model = MusanzeSmartModel()
-    model.train('../datasets/musanze_dataset.csv')
+    model.train(dataset_path)
     
     # Get prediction
     prediction = model.predict(user_message)

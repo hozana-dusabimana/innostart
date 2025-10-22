@@ -145,7 +145,9 @@ function getMusanzeMLResponse($message) {
         
         // Execute Python ML API for ALL business-related queries
         $escaped_message = escapeshellarg($message);
-        $command = "cd ../ml_models && python musanze_api.py $escaped_message 2>&1";
+        // Use absolute path to ensure the Python script is found
+        $script_path = dirname(__DIR__) . '/ml_models/musanze_api.py';
+        $command = "python " . escapeshellarg($script_path) . " $escaped_message 2>&1";
         $output = shell_exec($command);
         
         if ($output) {
